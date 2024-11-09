@@ -1,13 +1,13 @@
-package com.ttcn.agriculturalwebai;
+package com.ttcn.vnuaexam;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AgriculturalWebAiApplication {
+public class VnuaExamApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AgriculturalWebAiApplication.class, args);
+        SpringApplication.run(VnuaExamApplication.class, args);
     }
 
 }
