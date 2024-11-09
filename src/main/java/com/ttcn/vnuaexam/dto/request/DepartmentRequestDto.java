@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DepartmentRequestDto {
-    private UUID id;
+    private String id;
     private String name;
     private String address;
 }
