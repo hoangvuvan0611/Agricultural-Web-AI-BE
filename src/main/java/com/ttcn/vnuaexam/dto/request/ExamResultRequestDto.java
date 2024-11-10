@@ -7,10 +7,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentRequestDto {
+@NoArgsConstructor
+public class ExamResultRequestDto {
     private String id;
-    private String name;
-    private String address;
+    private String examSessionId;
+    private double totalScore;
+    private int correctCount;
+    private int wrongCount;
+    private int unAnswerCount;
+
 }

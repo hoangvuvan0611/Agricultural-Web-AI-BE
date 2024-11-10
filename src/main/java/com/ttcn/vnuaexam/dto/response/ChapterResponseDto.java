@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DepartmentResponseDto {
+public class ChapterResponseDto {
     private String id;
     private String name;
-    private String address;
+    private String description;
+    private String subjectId;
 }

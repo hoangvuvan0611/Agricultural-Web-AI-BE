@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentRequestDto {
-    private String id;
+@NoArgsConstructor
+public class ChapterRequestDto {
+    private UUID id;
     private String name;
-    private String address;
+    private String description;
+    private String subjectId;
 }

@@ -9,8 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentRequestDto {
+public class ExamQuestionRequestDto {
     private String id;
-    private String name;
-    private String address;
+    private String examId;
+    private String questionId;
+    private double score;
+    private int orderNumber;
+
 }
