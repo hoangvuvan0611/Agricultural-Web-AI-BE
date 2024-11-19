@@ -10,17 +10,16 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface FileDescriptionMapper {
-    @Mapping(target = "id", ignore = true)
-    FileDescription requestDtoToFileDescription(FileDescriptionRequestDto fileDescriptionRequestDto);
-
-    @Mapping(source = "id", target = "id")
-    FileDescriptionResponseDto entityToDto(FileDescription fileDescription);
-
-    default String map(UUID value) {
-        return value != null ? value.toString() : null;
-    }
-
-    default UUID map(String value) {
-        return value != null ? UUID.fromString(value) : null;
-    }
+//    @Mapping(source = "id", target = "id", conditionExpression = "java(fileDescriptionRequestDto.getId() != null)")
+//    FileDescription requestToEntity(FileDescriptionRequestDto fileDescriptionRequestDto);
+//
+//    FileDescriptionResponseDto entityToResponse(FileDescription fileDescription);
+//
+//    default String map(UUID value) {
+//        return value != null ? value.toString() : null;
+//    }
+//
+//    default UUID map(String value) {
+//        return value != null ? UUID.fromString(value) : null;
+//    }
 }

@@ -10,17 +10,17 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface ExamQuestionMapper {
-    @Mapping(target = "id", ignore = true)
-    ExamQuestion requestDtoToEntity(ExamQuestionRequestDto examQuestionRequestDto);
-
-    @Mapping(source = "id", target = "id")
-    ExamQuestionResponseDto entityToResponseDto(ExamQuestion examQuestion);
-
-    default String map(UUID value) {
-        return value != null ? value.toString() : null;
-    }
-
-    default UUID map(String value) {
-        return value != null ? UUID.fromString(value) : null;
-    }
+//    @Mapping(target = "id", ignore = true)
+//    ExamQuestion requestToEntity(ExamQuestionRequestDto examQuestionRequestDto);
+//
+//    @Mapping(source = "id", target = "id")
+//    ExamQuestionResponseDto entityToResponseDto(ExamQuestion examQuestion);
+//
+//    default String map(UUID value) {
+//        return value != null ? value.toString() : null;
+//    }
+//
+//    default UUID map(String value) {
+//        return value != null ? UUID.fromString(value) : null;
+//    }
 }

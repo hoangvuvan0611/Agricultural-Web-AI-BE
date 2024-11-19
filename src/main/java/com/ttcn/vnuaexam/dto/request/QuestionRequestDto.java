@@ -6,19 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionRequestDto {
-    private String id;
-    private String chapterId;
+    private Long id;
+    private String code;
+    private Long subjectId;
     private Date createDate;
     private String createdBy;
     private Date modifyDate;
     private String modifiedBy;
     private String content;
     private String image;
-    private String type;
+    List<AnswerRequestDto> answers;
 }

@@ -15,16 +15,5 @@ public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
     private final ExamMapper examMapper;
-
-    @Override
-    public ExamResponseDto examToResponseDto(Exam exam) {
-        return examMapper.EntityToResponseDto(exam);
-    }
-
-    @Override
-    public Exam requestDtoToExam(ExamRequestDto examRequestDto) {
-        Exam exam = examMapper.RequestDtoToEntity(examRequestDto);
-        examRepository.save(exam);
-        return exam;
-    }
 }
+
