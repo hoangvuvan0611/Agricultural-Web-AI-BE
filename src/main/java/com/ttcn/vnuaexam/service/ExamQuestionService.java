@@ -5,7 +5,7 @@ import com.ttcn.vnuaexam.dto.response.ExamQuestionResponseDto;
 import com.ttcn.vnuaexam.entity.ExamQuestion;
 
 public interface ExamQuestionService {
-    ExamQuestionResponseDto entityToResponseDto(ExamQuestion exam);
-
-    ExamQuestion requestDtoToEntity(ExamQuestionRequestDto examQuestionRequestDto);
+//    ExamQuestionResponseDto entityToResponseDto(ExamQuestion exam);
+//
+//    ExamQuestion requestDtoToEntity(ExamQuestionRequestDto examQuestionRequestDto);
 }
