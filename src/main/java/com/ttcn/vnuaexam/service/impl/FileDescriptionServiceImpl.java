@@ -15,16 +15,4 @@ public class FileDescriptionServiceImpl implements FileDescriptionService {
     private final FileDescriptionRepository fileDescriptionRepository;
     private final FileDescriptionMapper fileDescriptionMapper;
 
-
-    @Override
-    public FileDescriptionResponseDto entityToDto(FileDescription fileDescription) {
-        return fileDescriptionMapper.entityToDto(fileDescription);
-    }
-
-    @Override
-    public FileDescription requestDtoToFileDescription(FileDescriptionRequestDto fileDescriptionRequestDto) {
-        FileDescription fileDescription = fileDescriptionMapper.requestDtoToFileDescription(fileDescriptionRequestDto);
-        fileDescriptionRepository.save(fileDescription);
-        return fileDescription;
-    }
 }

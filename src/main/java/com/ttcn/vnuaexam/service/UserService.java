@@ -5,7 +5,4 @@ import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.entity.User;
 
 public interface UserService {
-    User requestDtoToEntity(UserRequestDto userRequestDto);
-
-    UserResponseDto entityToResponseDto(User user);
 }

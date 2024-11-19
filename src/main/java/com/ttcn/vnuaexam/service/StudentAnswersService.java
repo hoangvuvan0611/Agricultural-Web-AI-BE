@@ -5,7 +5,4 @@ import com.ttcn.vnuaexam.dto.response.StudentAnswersResponseDto;
 import com.ttcn.vnuaexam.entity.StudentAnswers;
 
 public interface StudentAnswersService {
-    StudentAnswers requestDtoToEntity(StudentAnswersRequestDto requestDto);
-
-    StudentAnswersResponseDto entityToResponseDto(StudentAnswers studentAnswers);
 }

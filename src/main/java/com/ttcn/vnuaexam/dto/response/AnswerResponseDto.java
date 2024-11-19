@@ -8,12 +8,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class AnswerResponseDto {
-    private String id;
+    private Long id;
     private String questionId;
+    private String code;
     private String content;
     private Boolean isCorrect;
-    private Date createDate;
-    private String createdBy;
-    private Date modifyDate;
-    private String modifiedBy;
 }

@@ -5,8 +5,4 @@ import com.ttcn.vnuaexam.dto.response.ExamResultResponseDto;
 import com.ttcn.vnuaexam.entity.ExamResult;
 
 public interface ExamResultService {
-
-    ExamResult requestDtoToEntity(ExamResultRequestDto requestDto);
-
-    ExamResultResponseDto entityToResponseDto(ExamResult examResult);
 }

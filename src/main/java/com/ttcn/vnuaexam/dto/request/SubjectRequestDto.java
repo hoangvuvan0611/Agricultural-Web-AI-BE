@@ -10,9 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectRequestDto {
-    private String id;
+    private Long id;
     private String name;
     private String code;
     private String description;
-    private String departmentId;
+    private Long departmentId;
 }

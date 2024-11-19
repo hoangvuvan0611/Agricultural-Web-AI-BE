@@ -15,15 +15,4 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     private final ExamSessionMapper examSessionMapper;
     private final ExamSessionRepository examSessionRepository;
 
-    @Override
-    public ExamSession requestDtoToExamSession(ExamSessionRequestDto examSessionRequestDto) {
-        ExamSession examSession = examSessionMapper.requestDtoToEntity(examSessionRequestDto);
-        examSessionRepository.save(examSession);
-        return examSession;
-    }
-
-    @Override
-    public ExamSessionResponseDto examSessionToResponseDto(ExamSession examSession) {
-        return examSessionMapper.entityToResponseDto(examSession);
-    }
 }

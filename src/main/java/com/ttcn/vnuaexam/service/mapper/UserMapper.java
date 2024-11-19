@@ -10,17 +10,17 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mapping(target = "id", ignore = true)
-    User requestToEntity(UserRequestDto requestDto);
-
-    @Mapping(source = "id", target = "id")
-    UserResponseDto entityToResponse(User user);
-
-    default String map(UUID value) {
-        return value != null ? value.toString() : null;
-    }
-
-    default UUID map(String value) {
-        return value != null ? UUID.fromString(value) : null;
-    }
+//    @Mapping(target = "id", ignore = true)
+//    User requestToEntity(UserRequestDto requestDto);
+//
+//    @Mapping(source = "id", target = "id")
+//    UserResponseDto entityToResponse(User user);
+//
+//    default String map(UUID value) {
+//        return value != null ? value.toString() : null;
+//    }
+//
+//    default UUID map(String value) {
+//        return value != null ? UUID.fromString(value) : null;
+//    }
 }

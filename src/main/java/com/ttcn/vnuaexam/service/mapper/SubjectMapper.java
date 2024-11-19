@@ -5,22 +5,15 @@ import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
 import com.ttcn.vnuaexam.entity.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.UUID;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface SubjectMapper {
     @Mapping(target = "id", ignore = true)
-    Subject requestDtoToEntity(SubjectRequestDto subjectRequestDto);
+    Subject requestToEntity(SubjectRequestDto requestDto);
 
-    @Mapping(source = "id", target = "id")
-    SubjectResponseDto entityToDto(Subject subject);
+    SubjectResponseDto entityToResponse(Subject subject);
 
-    default String map(UUID value) {
-        return value != null ? value.toString() : null;
-    }
-
-    default UUID map(String value) {
-        return value != null ? UUID.fromString(value) : null;
-    }
+    @Mapping(target = "id", ignore = true)
+    void setValue(SubjectRequestDto dto, @MappingTarget Subject entity);
 }

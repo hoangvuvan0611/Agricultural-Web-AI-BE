@@ -12,12 +12,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerRequestDto {
-    private String id;
-    private String questionId;
+    private Long id;
+    private Long questionId;
+    private String code;
     private String content;
     private Boolean isCorrect;
-    private Date createDate;
-    private String createdBy;
-    private Date modifyDate;
-    private String modifiedBy;
 }

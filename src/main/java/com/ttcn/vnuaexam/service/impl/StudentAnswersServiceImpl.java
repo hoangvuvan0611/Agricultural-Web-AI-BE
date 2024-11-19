@@ -16,15 +16,4 @@ public class StudentAnswersServiceImpl implements StudentAnswersService {
     private StudentAnswersMapper studentAnswersMapper;
     private StudentAnswersRepository studentAnswersRepository;
 
-    @Override
-    public StudentAnswers requestDtoToEntity(StudentAnswersRequestDto requestDto) {
-        StudentAnswers studentAnswers = studentAnswersMapper.requestDtoToEntity(requestDto);
-        studentAnswersRepository.save(studentAnswers);
-        return studentAnswers;
-    }
-
-    @Override
-    public StudentAnswersResponseDto entityToResponseDto(StudentAnswers studentAnswers) {
-        return studentAnswersMapper.entityToResponseDto(studentAnswers);
-    }
 }
