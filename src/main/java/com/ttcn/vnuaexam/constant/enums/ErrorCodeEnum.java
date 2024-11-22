@@ -23,6 +23,13 @@ public enum ErrorCodeEnum {
     CODE_IS_EMPTY(400_0012, "Question code is empty"),
     ANSWER_CODE_IS_EXIST(400_0014, "Answer code is exist"),
     CANNOT_CREATE_ANSWER(400_0015, "Can't create answer"),
+    USER_CODE_IS_NOT_EXIST(400_0016, "User code is not exist"),
+    USER_CODE_ALREADY_EXISTS(400_0017, "User code already exists"),
+    NOT_FOUND_USER(400_0018, "Not Found User"),
+    NOT_FOUND_USERNAME(400_0018, "Not Found User Name"),
+    USER_NAME_NOT_EMPTY(400_0019, "User name is empty"),
+    USER_NAME_ALREADY_EXISTS(400_0017, "User name already exists"),
+    UNAUTHENTICATED(400_0018, "Unauthenticated"),
     ;
 
     private final int errorCode;

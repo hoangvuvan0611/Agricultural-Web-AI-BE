@@ -1,11 +1,13 @@
 package com.ttcn.vnuaexam.response;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class EMResponse<T> {
     private int code;
     private String message;

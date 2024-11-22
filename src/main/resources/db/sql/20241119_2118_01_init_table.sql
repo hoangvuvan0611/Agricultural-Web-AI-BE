@@ -1,8 +1,8 @@
 -- Tạo database nếu chưa tồn tại
 -- CREATE DATABASE IF NOT EXISTS exam_management
--- CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+--  CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 -- Bộ môn
-
+--
 -- Tắt kiểm tra khóa ngoại
 SET foreign_key_checks = 0;
 

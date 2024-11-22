@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
-    private String id;
+    private Long id;
     private String username;
     private String password;
     private String code;
@@ -21,7 +21,7 @@ public class UserRequestDto {
     private String createdBy;
     private Date createDate;
     private String modifiedBy;
-    private Date modifiedDate;
+    private Date modifyDate;
     private Boolean isActive;
 
 }

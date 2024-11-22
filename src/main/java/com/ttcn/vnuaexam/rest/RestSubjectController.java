@@ -1,16 +1,11 @@
 package com.ttcn.vnuaexam.rest;
 
-import com.ttcn.vnuaexam.dto.request.DepartmentRequestDto;
 import com.ttcn.vnuaexam.dto.request.SubjectRequestDto;
-import com.ttcn.vnuaexam.dto.response.DepartmentResponseDto;
 import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
-import com.ttcn.vnuaexam.dto.search.DepartmentSearchDto;
 import com.ttcn.vnuaexam.dto.search.SubjectSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
-import com.ttcn.vnuaexam.service.DepartmentService;
 import com.ttcn.vnuaexam.service.SubjectService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +37,7 @@ public class RestSubjectController {
     }
 
     @GetMapping("/search")
-    public EMResponse<Page<SubjectResponseDto>> search(SubjectSearchDto searchDto){
+    public EMResponse<Page<SubjectResponseDto>> search(SubjectSearchDto searchDto) {
         return new EMResponse<>(subjectService.searchSubject(searchDto));
     }
 }
