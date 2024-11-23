@@ -17,4 +17,8 @@ public class AnswerRequestDto {
     private String code;
     private String content;
     private Boolean isCorrect;
+    private Date createDate;
+    private String createdBy;
+    private Date modifyDate;
+    private String modifiedBy;
 }
