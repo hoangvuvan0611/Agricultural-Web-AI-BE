@@ -1,4 +1,4 @@
-package com.octl2.api.helper;
+package com.ttcn.vnuaexam.helper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

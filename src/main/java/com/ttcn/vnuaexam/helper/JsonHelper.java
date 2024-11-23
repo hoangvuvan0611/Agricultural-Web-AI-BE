@@ -1,4 +1,4 @@
-package com.octl2.api.helper;
+package com.ttcn.vnuaexam.helper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
