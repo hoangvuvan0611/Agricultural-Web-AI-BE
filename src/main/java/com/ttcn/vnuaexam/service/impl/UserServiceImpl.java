@@ -8,6 +8,8 @@ import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -73,6 +75,10 @@ public class UserServiceImpl implements UserService {
         validateUser(userRequestDto, true);
         var userResponseDto = userMapper.requestToEntity(userRequestDto);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+        String addedBy = getCurrentUserName();
+        userResponseDto.setCreatedBy(addedBy);
+
         userResponseDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         userRepository.save(userResponseDto);
         return userMapper.entityToResponse(userResponseDto);
@@ -108,6 +114,11 @@ public class UserServiceImpl implements UserService {
         return users.stream()
                 .map(userMapper::entityToResponse)
                 .collect(Collectors.toList());
+    }
+
+    private String getCurrentUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : null;
     }
 
 
