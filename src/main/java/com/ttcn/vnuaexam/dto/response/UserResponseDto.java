@@ -18,7 +18,7 @@ public class UserResponseDto extends BaseEntity {
     private String password;
     private String code;
     private String fullName;
-    private int role;
+    private String role;
     private Boolean isActive;
 
 }

@@ -6,10 +6,12 @@ import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class RestUserController {
         return new EMResponse<>(userService.updateUser(id, requestDto));
     }
 
-    @GetMapping("/{code}")
+    @GetMapping("/{id}")
     public EMResponse<UserResponseDto> getUser(@PathVariable Long id) throws EMException {
         return new EMResponse<>(userService.getUserById(id));
     }

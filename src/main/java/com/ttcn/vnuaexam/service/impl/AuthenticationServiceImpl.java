@@ -9,6 +9,7 @@ import com.ttcn.vnuaexam.authentication.AuthenticationRequest;
 import com.ttcn.vnuaexam.authentication.AuthenticationResponse;
 import com.ttcn.vnuaexam.authentication.IntrospectRequest;
 import com.ttcn.vnuaexam.authentication.IntrospectResponse;
+import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.AuthenticationService;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.StringJoiner;
 
 import static com.nimbusds.jose.JOSEObjectType.JWT;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND_USERNAME;
@@ -67,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new EMException(UNAUTHENTICATED);
         }
 
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -75,16 +77,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
-    private String generateToken(String username) {
+    private String generateToken(User user) {
 
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("Test.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(new Date().getTime() + 3600 * 1000))
-                .claim("User", "Custom")
+                .claim("Scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -98,5 +100,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("JWT Sign Error", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(User user) {
+        StringJoiner scopeJoiner = new StringJoiner(" ");
+        if (user.getRole() != 0) {
+            switch (user.getRole()) {
+                case 1:
+                    scopeJoiner.add("ADMIN");
+                    break;
+                case 2:
+                    scopeJoiner.add("TEACHER");
+                    break;
+                case 3:
+                    scopeJoiner.add("PROCTOR");
+                case 4:
+                    scopeJoiner.add("STUDENT");
+                default:
+                    scopeJoiner.add("UNKNOWN_ROLE");
+                    break;
+            }
+        }
+        return scopeJoiner.toString();
     }
 }
