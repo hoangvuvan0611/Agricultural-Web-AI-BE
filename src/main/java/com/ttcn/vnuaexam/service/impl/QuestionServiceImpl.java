@@ -27,7 +27,6 @@ import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 
 @Service
 @AllArgsConstructor
-@Transactional
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
@@ -55,6 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional
     public QuestionResponseDto create(QuestionRequestDto requestDto) throws EMException {
         validateQuestion(requestDto, true);
 
