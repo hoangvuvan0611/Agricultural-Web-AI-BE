@@ -16,27 +16,16 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 public class SecurityConfig {
 
-    private final String[] PUBLIC_URL_POST = {
-//            "/api/user/add",
-             "/auth/token"
+    private final String[] PUBLIC_URL_POST = {"/api/user/add"
+            , "/auth/token"
             , "/auth/introspect"
     };
 
-    private final String[] URL_ADMIN ={
-            "/api/user/**"
-            ,"/api/questions/**"
-            ,"/api/class/**"
-            ,"/api/subject/**"
-            ,"api/exam/**"
-    };
+    private final String[] PUBLIC_URL_GET = {};
 
-    private final String[] URL_TEACHER ={
-            "/api/class/**"
-            ,"/api/subject/**"
-            ,"api/exam/**"
-    };
+    private final String[] PUBLIC_URL_PUT = {};
 
-
+    private final String[] PUBLIC_URL_DELETE = {};
 
     @Value("${jwt.signer.key}")
     protected String SIGNER_KEY ;
@@ -46,10 +35,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_URL_POST).permitAll()
-                        .requestMatchers(URL_ADMIN).hasAuthority("SCOPE_ADMIN")
-                        .requestMatchers(URL_TEACHER).hasAuthority("SCOPE_TEACHER")
-                        .requestMatchers("/api/proctor/exam-session").hasAuthority("SCOPE_PROCTOR")
-                        .requestMatchers("/api/student/exam-session").hasAuthority("SCOPE_STUDENT")
+//                      .requestMatchers(HttpMethod.GET, PUBLIC_URL_GET).permitAll() //thêm gì thì thêm :))
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2

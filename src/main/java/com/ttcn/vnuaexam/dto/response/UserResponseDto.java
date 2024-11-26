@@ -1,7 +1,6 @@
 package com.ttcn.vnuaexam.dto.response;
 
 import com.ttcn.vnuaexam.entity.BaseEntity;
-import com.ttcn.vnuaexam.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ public class UserResponseDto extends BaseEntity {
     private String password;
     private String code;
     private String fullName;
-    private String role;
+    private int role;
     private Boolean isActive;
 
 }
