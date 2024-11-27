@@ -1,6 +1,7 @@
 package com.ttcn.vnuaexam.entity;
 
 import com.ttcn.vnuaexam.constant.MessageCodes;
+import com.ttcn.vnuaexam.constant.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -37,7 +38,7 @@ public class User extends BaseEntity {
     private String fullName;
 
     @Column(name = "role")
-    private int role;
+    private Role role;
 
     @Column(name = "is_active")
     private Boolean isActive;

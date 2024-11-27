@@ -7,8 +7,7 @@ import com.ttcn.vnuaexam.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.UUID;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -17,14 +16,18 @@ public interface UserMapper {
     @Mapping(source = "role", target = "role")
     User requestToEntity(UserRequestDto requestDto);
 
-    @Mapping(source = "role", target = "role", qualifiedByName = "roleToString")
+    @Mapping(source = "role", target = "role")
     UserResponseDto entityToResponse(User user);
 
     @Mapping(target = "id", ignore = true)
-    void setValue(UserRequestDto requestDto,@MappingTarget User user);
+    void setValue(UserRequestDto requestDto, @MappingTarget User user);
 
-    @org.mapstruct.Named("roleToString")
-    default String roleToString(int role) {
-        return Role.formRole(role).name();
+    default Role map(int value) {
+        for (Role role : Role.values()) {
+            if (role.getNumRole() == value) { // Sử dụng id của enum để ánh xạ
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Invalid role id: " + value);
     }
 }

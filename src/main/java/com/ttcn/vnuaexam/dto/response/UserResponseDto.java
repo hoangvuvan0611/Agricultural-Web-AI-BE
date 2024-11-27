@@ -1,12 +1,11 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -18,7 +17,10 @@ public class UserResponseDto extends BaseEntity {
     private String password;
     private String code;
     private String fullName;
-    private String role;
+    private Role role;
     private Boolean isActive;
 
+    public String getRoleValue() {
+        return role != null ? role.getValue() : null;
+    }
 }

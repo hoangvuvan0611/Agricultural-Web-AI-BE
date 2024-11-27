@@ -23,10 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.StringJoiner;
 
-import static com.nimbusds.jose.JOSEObjectType.JWT;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND_USERNAME;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.UNAUTHENTICATED;
 
@@ -104,21 +105,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
-        if (user.getRole() != 0) {
-            switch (user.getRole()) {
-                case 1:
-                    scopeJoiner.add("ADMIN");
-                    break;
-                case 2:
-                    scopeJoiner.add("TEACHER");
-                    break;
-                case 3:
-                    scopeJoiner.add("PROCTOR");
-                case 4:
-                    scopeJoiner.add("STUDENT");
-                default:
-                    scopeJoiner.add("UNKNOWN_ROLE");
-                    break;
+        if (user.getRole() != null && user.getRole().getValue() != null) {
+            log.info("User Role: " + user.getRole().getValue()); // Kiểm tra giá trị role
+            if (user.getRole().getNumRole() != 0) {
+                switch (user.getRole().getNumRole()) {
+                    case 1:
+                        scopeJoiner.add("ADMIN");
+                        break;
+                    case 2:
+                        scopeJoiner.add("TEACHER");
+                        break;
+                    case 3:
+                        scopeJoiner.add("PROCTOR");
+                        break;
+                    case 4:
+                        scopeJoiner.add("STUDENT");
+                        break;
+                    default:
+                        scopeJoiner.add("UNKNOWN_ROLE");
+                        break;
+                }
             }
         }
         return scopeJoiner.toString();
