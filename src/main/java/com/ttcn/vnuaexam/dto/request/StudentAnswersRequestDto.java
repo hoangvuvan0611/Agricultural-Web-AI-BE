@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentRequestDto {
+public class StudentAnswersRequestDto {
     private String id;
-    private String name;
-    private String address;
+    private String examSessionId;
+    private String examQuestionId;
+    private String answerId;
+    private Date answerDate;
+
 }
