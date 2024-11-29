@@ -58,7 +58,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {EMException.class})
     public QuestionResponseDto create(QuestionRequestDto requestDto) throws EMException {
         validateQuestion(requestDto, true);
         validateAnswer(requestDto.getAnswers());
@@ -105,7 +105,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new EMException(ANSWER_BLANK);
 
         // Kiểm tra trùng lặp
-        if (hasUniqueAnswers(answerContents))
+        if (!hasUniqueAnswers(answerContents))
             throw new EMException(DUPLICATE_ANSWER);
 
         // Kiểm tra đáp án đúng
@@ -134,7 +134,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {EMException.class})
     public QuestionResponseDto update(Long id, QuestionRequestDto requestDto) throws EMException {
         // Tìm question
         var question = questionRepository.findById(id)

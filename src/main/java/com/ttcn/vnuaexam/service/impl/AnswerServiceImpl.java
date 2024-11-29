@@ -5,6 +5,7 @@ import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.AnswerRepository;
+import com.ttcn.vnuaexam.repository.QuestionRepository;
 import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerMapper answerMapper;
     private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
     @Override
     public AnswerResponseDto create(AnswerRequestDto requestDto) throws EMException {
@@ -25,10 +27,10 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void deleteByQuestionId(Long id) throws EMException {
-        if (!answerRepository.existsById(id)) {
+        if (!questionRepository.existsById(id)) {
             throw new EMException(ErrorCodeEnum.NOT_FOUND);
         }
-        answerRepository.deleteById(id);
+        answerRepository.deleteByQuestionId(id);
     }
 
 }
