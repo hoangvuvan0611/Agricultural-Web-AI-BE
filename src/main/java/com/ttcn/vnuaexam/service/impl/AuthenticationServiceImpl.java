@@ -9,6 +9,7 @@ import com.ttcn.vnuaexam.authentication.AuthenticationRequest;
 import com.ttcn.vnuaexam.authentication.AuthenticationResponse;
 import com.ttcn.vnuaexam.authentication.IntrospectRequest;
 import com.ttcn.vnuaexam.authentication.IntrospectResponse;
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.UserRepository;
@@ -105,27 +106,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
-        if (user.getRole() != null && user.getRole().getValue() != null) {
-            log.info("User Role: " + user.getRole().getValue()); // Kiểm tra giá trị role
-            if (user.getRole().getNumRole() != 0) {
-                switch (user.getRole().getNumRole()) {
-                    case 1:
-                        scopeJoiner.add("ADMIN");
-                        break;
-                    case 2:
-                        scopeJoiner.add("TEACHER");
-                        break;
-                    case 3:
-                        scopeJoiner.add("PROCTOR");
-                        break;
-                    case 4:
-                        scopeJoiner.add("STUDENT");
-                        break;
-                    default:
-                        scopeJoiner.add("UNKNOWN_ROLE");
-                        break;
-                }
+
+        if (user.getRole() != null) {
+            Role role = Role.formNumRole(user.getRole());
+
+            switch (role) {
+                case ADMIN:
+                    scopeJoiner.add(role.name());
+                    break;
+                case TEACHER:
+                    scopeJoiner.add(role.name());
+                    break;
+                case PROCTOR:
+                    scopeJoiner.add(role.name());
+                    break;
+                case STUDENT:
+                    scopeJoiner.add(role.name());
+                    break;
+                default:
+                    scopeJoiner.add("UNKNOWN_ROLE");
+                    break;
             }
+        } else {
+            scopeJoiner.add("UNKNOWN_ROLE");
         }
         return scopeJoiner.toString();
     }

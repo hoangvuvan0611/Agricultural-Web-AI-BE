@@ -17,7 +17,7 @@ public class UserRequestDto {
     private String password;
     private String code;
     private String fullName;
-    private int role;
+    private Integer role;
     private String createdBy;
     private Date createDate;
     private String modifiedBy;
