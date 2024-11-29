@@ -7,7 +7,6 @@ import com.ttcn.vnuaexam.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -24,7 +23,7 @@ public interface UserMapper {
 
     default Role map(int value) {
         for (Role role : Role.values()) {
-            if (role.getNumRole() == value) { // Sử dụng id của enum để ánh xạ
+            if (role.getNumRole() == value) {
                 return role;
             }
         }

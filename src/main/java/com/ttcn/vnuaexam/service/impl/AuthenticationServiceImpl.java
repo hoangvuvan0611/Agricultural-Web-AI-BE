@@ -9,6 +9,7 @@ import com.ttcn.vnuaexam.authentication.AuthenticationRequest;
 import com.ttcn.vnuaexam.authentication.AuthenticationResponse;
 import com.ttcn.vnuaexam.authentication.IntrospectRequest;
 import com.ttcn.vnuaexam.authentication.IntrospectResponse;
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.UserRepository;
@@ -105,27 +106,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
-        if (user.getRole() != null && user.getRole().getValue() != null) {
-            log.info("User Role: " + user.getRole().getValue()); // Kiểm tra giá trị role
-            if (user.getRole().getNumRole() != 0) {
-                switch (user.getRole().getNumRole()) {
-                    case 1:
-                        scopeJoiner.add("ADMIN");
-                        break;
-                    case 2:
-                        scopeJoiner.add("TEACHER");
-                        break;
-                    case 3:
-                        scopeJoiner.add("PROCTOR");
-                        break;
-                    case 4:
-                        scopeJoiner.add("STUDENT");
-                        break;
-                    default:
-                        scopeJoiner.add("UNKNOWN_ROLE");
-                        break;
-                }
+
+        if (user.getRole() != null) {
+            // Chuyển Integer role thành enum Role
+            Role role = Role.formNumRole(user.getRole());
+
+            // Thực hiện thao tác với enum Role mà không lấy thuộc tính value hay numRole
+            // Ví dụ: bạn có thể dùng tên enum hoặc thêm logic xử lý tùy ý
+            switch (role) {
+                case ADMIN:
+                    // Logic xử lý khi role là ADMIN
+                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "ADMIN"
+                    break;
+                case TEACHER:
+                    // Logic xử lý khi role là TEACHER
+                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "TEACHER"
+                    break;
+                case PROCTOR:
+                    // Logic xử lý khi role là PROCTOR
+                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "PROCTOR"
+                    break;
+                case STUDENT:
+                    scopeJoiner.add(role.name());
+                    break;
+                default:
+                    scopeJoiner.add("UNKNOWN_ROLE");
+                    break;
             }
+        } else {
+            scopeJoiner.add("UNKNOWN_ROLE");
         }
         return scopeJoiner.toString();
     }

@@ -13,22 +13,17 @@ public enum Role    {
     UNKNOWN_ROLE(0," un");
     ;
     @Getter
-    private final int numRole;
-    @Getter
+    private final Integer numRole;
     private final String value;
 
-    Role(Integer numRole,String values) {
-        this.numRole = numRole;
-        this.value = values;
-    }
 
-    public static Role formRole(int numRole) {
+    public static Role formNumRole(Integer numRole) {
         for (Role role : Role.values()) {
             if (role.getNumRole() == numRole) {
                 return role;
             }
         }
-        return UNKNOWN_ROLE;  // Trả về UNKNOWN_ROLE nếu không tìm thấy role
+        return UNKNOWN_ROLE;
     }
 
 }

@@ -88,6 +88,10 @@ public class UserServiceImpl implements UserService {
 
         validateUser(userRequestDto, false);
         userMapper.setValue(userRequestDto, user);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        String updatedBy = getCurrentUserName();
+        user.setModifiedBy(updatedBy);
         userRepository.save(user);
         return userMapper.entityToResponse(user);
     }

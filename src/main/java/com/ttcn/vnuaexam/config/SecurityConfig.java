@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -28,14 +30,6 @@ public class SecurityConfig {
 
     };
 
-    private final String[] URL_TEACHER ={
-            "/api/class/**"
-            ,"/api/subject/**"
-            ,"api/exam/**"
-    };
-
-
-
     @Value("${jwt.signer.key}")
     protected String SIGNER_KEY ;
 
@@ -44,7 +38,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_URL_POST).permitAll()
-                        .requestMatchers("/api/user/all").hasAuthority("ADMIN")
+                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/questions/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/class/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/subject/**").hasAuthority("ADMIN")
@@ -82,6 +76,11 @@ public class SecurityConfig {
                     .collect(Collectors.toList());
         });
         return jwtAuthenticationConverter;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }
