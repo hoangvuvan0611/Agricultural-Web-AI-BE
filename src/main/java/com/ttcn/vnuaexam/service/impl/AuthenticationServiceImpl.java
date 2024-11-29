@@ -108,23 +108,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         StringJoiner scopeJoiner = new StringJoiner(" ");
 
         if (user.getRole() != null) {
-            // Chuyển Integer role thành enum Role
             Role role = Role.formNumRole(user.getRole());
-
-            // Thực hiện thao tác với enum Role mà không lấy thuộc tính value hay numRole
-            // Ví dụ: bạn có thể dùng tên enum hoặc thêm logic xử lý tùy ý
             switch (role) {
                 case ADMIN:
-                    // Logic xử lý khi role là ADMIN
-                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "ADMIN"
+                    scopeJoiner.add(role.name()); 
                     break;
-                case TEACHER:
-                    // Logic xử lý khi role là TEACHER
-                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "TEACHER"
+                case TEACHER:              
+                    scopeJoiner.add(role.name());
                     break;
                 case PROCTOR:
-                    // Logic xử lý khi role là PROCTOR
-                    scopeJoiner.add(role.name()); // Lấy tên của enum, ví dụ "PROCTOR"
+                    scopeJoiner.add(role.name()); 
                     break;
                 case STUDENT:
                     scopeJoiner.add(role.name());
