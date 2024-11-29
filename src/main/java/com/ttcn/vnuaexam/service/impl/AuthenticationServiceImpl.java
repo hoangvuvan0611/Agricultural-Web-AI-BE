@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.StringJoiner;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND_USERNAME;
@@ -42,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @NonFinal
     @Value("${jwt.signer.key}")
-    protected String SIGNER_KEY ;
+    protected String SIGNER_KEY;
 
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
@@ -106,30 +104,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
-
         if (user.getRole() != null) {
             Role role = Role.formNumRole(user.getRole());
-
-            switch (role) {
-                case ADMIN:
-                    scopeJoiner.add(role.name());
-                    break;
-                case TEACHER:
-                    scopeJoiner.add(role.name());
-                    break;
-                case PROCTOR:
-                    scopeJoiner.add(role.name());
-                    break;
-                case STUDENT:
-                    scopeJoiner.add(role.name());
-                    break;
-                default:
-                    scopeJoiner.add("UNKNOWN_ROLE");
-                    break;
+            if (role != null && role != Role.UNKNOWN_ROLE) {
+                scopeJoiner.add(role.name());
+            } else {
+                scopeJoiner.add("UNKNOWN_ROLE");
             }
-        } else {
-            scopeJoiner.add("UNKNOWN_ROLE");
         }
-        return scopeJoiner.toString();
+            return scopeJoiner.toString();
     }
 }
