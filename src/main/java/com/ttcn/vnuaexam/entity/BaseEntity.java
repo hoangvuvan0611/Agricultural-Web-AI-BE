@@ -1,9 +1,6 @@
 package com.ttcn.vnuaexam.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -12,17 +9,21 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @CreatedDate
     @Column(name = "create_date", updatable = false)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)
@@ -30,7 +31,7 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     @Column(name = "modify_date")
-    private Date modifyDate;
+    private LocalDateTime modifyDate;
 
     @LastModifiedBy
     @Column(name = "modified_by")

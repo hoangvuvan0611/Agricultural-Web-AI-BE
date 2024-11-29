@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class RestSubjectController {
     private final SubjectService subjectService;
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public EMResponse<SubjectResponseDto> getById(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(subjectService.getById(id));
     }
@@ -31,7 +31,7 @@ public class RestSubjectController {
         return new EMResponse<>(subjectService.update(requestDto, id));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(subjectService.deleteById(id));
     }

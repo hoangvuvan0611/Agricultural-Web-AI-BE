@@ -9,10 +9,7 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    List<Answer> findByCode(String code);
-
-    @Query(" FROM Answer a WHERE a.code = :code AND a.id <> :id ")
-    List<Answer> findByCodeAndNotId(String code, Long id);
-
     List<Answer> findByQuestionId(Long questionId);
+
+    void deleteByQuestionId(Long questionId);
 }
