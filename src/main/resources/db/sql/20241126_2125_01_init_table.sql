@@ -28,7 +28,6 @@ CREATE TABLE tbl_chapter (
 								modify_date DATETIME NULL DEFAULT NULL,
 								modified_by VARCHAR(255) NULL DEFAULT NULL,
 								subject_id BIGINT NULL DEFAULT NULL,
-                                code VARCHAR(255) NULL DEFAULT NULL,
                                 name VARCHAR(255) NULL DEFAULT NULL,														
                                 description VARCHAR(255) NULL DEFAULT NULL,
 																FOREIGN KEY (subject_id) REFERENCES tbl_subject(id)
@@ -40,7 +39,6 @@ CREATE TABLE tbl_question (
                               id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                               subject_id BIGINT NULL DEFAULT NULL,
 							  chapter_id BIGINT NULL DEFAULT NULL,
-                              code VARCHAR(255) NULL DEFAULT NULL,
                               create_date DATETIME NOT NULL,
                               created_by VARCHAR(255) NOT NULL,
                               modify_date DATETIME NULL DEFAULT NULL,
@@ -61,9 +59,9 @@ CREATE TABLE tbl_answer (
                             modify_date DATETIME NULL DEFAULT NULL,
                             modified_by VARCHAR(255) NULL DEFAULT NULL,
                             question_id BIGINT NULL DEFAULT NULL,
-							code VARCHAR(255) NULL DEFAULT NULL,
+														order_number INT NULL DEFAULT NULL,
                             content VARCHAR(255) NULL DEFAULT NULL,
-							image VARCHAR(255) NULL DEFAULT NULL,
+														image VARCHAR(255) NULL DEFAULT NULL,
                             is_correct BIT(1) NOT NULL,
                             FOREIGN KEY (question_id) REFERENCES tbl_question(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;

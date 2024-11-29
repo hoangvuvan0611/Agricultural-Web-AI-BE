@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.service.impl;
 
+import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.request.QuestionRequestDto;
 import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
@@ -18,7 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.yaml.snakeyaml.emitter.EmitterException;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,67 +61,107 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponseDto create(QuestionRequestDto requestDto) throws EMException {
         validateQuestion(requestDto, true);
+        validateAnswer(requestDto.getAnswers());
 
-        //Lưu question
+        //Xử lý ảnh
         var question = questionMapper.requestToEntity(requestDto);
+        question.setCountCorrect(countCorrect(requestDto.getAnswers()));
         questionRepository.save(question);
-
-        //Map answer sử dụng stream
-        List<AnswerResponseDto> answers = List.of();
-        if (requestDto.getAnswers() != null) {
-            answers = requestDto.getAnswers().stream()
-                    .map(requestAnswer -> {
-                        requestAnswer.setQuestionId(question.getId());
-                        try {
-                            return answerService.create(requestAnswer);
-                        } catch (EMException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).collect(Collectors.toList());
-        }
 
         // tạo response
         var response = questionMapper.entityToResponse(question);
-        if (!CollectionUtils.isEmpty(answers)) {
-            response.setAnswers(answers);
-        }
+        saveAnswer(response, requestDto.getAnswers());
         return response;
     }
 
     private void validateQuestion(QuestionRequestDto requestDto, boolean isCreate) throws EMException {
         // Kiểm tra code, name trống
-        if(!StringUtils.hasText(requestDto.getCode())){
-            throw new EMException(CODE_IS_EMPTY);
+        if(!StringUtils.hasText(requestDto.getContent())){
+            throw new EMException(QUESTION_CONTENT_IS_EMPTY);
         }
 
-        // Kiểm tra code tồn tại chưa
+        // Kiểm tra content tồn tại chưa
         List<Question> questions;
         if (isCreate)
-            questions = questionRepository.findByCode(requestDto.getCode());
+            questions = questionRepository.findByContent(requestDto.getContent());
         else
-            questions = questionRepository.findByCodeAndNotId(requestDto.getCode(), requestDto.getId());
+            questions = questionRepository.findByContentAndNotId(requestDto.getContent(), requestDto.getId());
 
         if (!CollectionUtils.isEmpty(questions))
             throw new EMException(QUESTION_CODE_IS_EXIST);
+
+        // Kiểm tra câu trả lời
+    }
+
+    private void validateAnswer(List<AnswerRequestDto> answers) throws EMException {
+        List<String> answerContents = answers.stream().map(AnswerRequestDto::getContent).toList();
+
+        // Phải có câu trả lời
+        if (CollectionUtils.isEmpty(answerContents))
+            throw new EMException(QUESTION_NO_ANSWER);
+
+        // Câu trả lời không được trống
+        if (answerContents.stream().anyMatch(String::isBlank))
+            throw new EMException(ANSWER_BLANK);
+
+        // Kiểm tra trùng lặp
+        if (hasUniqueAnswers(answerContents))
+            throw new EMException(DUPLICATE_ANSWER);
+
+        // Kiểm tra đáp án đúng
+        if (countCorrect(answers) < 1)
+            throw new EMException(DO_NOT_HAVE_CORRECT_ANSWER);
+    }
+
+    private boolean hasUniqueAnswers(List<String> answers) {
+        return new HashSet<>(answers).size() == answers.size();
+    }
+
+    private Integer countCorrect(List<AnswerRequestDto> answers) {
+        if (!CollectionUtils.isEmpty(answers))
+            return Math.toIntExact((answers.stream().filter(AnswerRequestDto::getIsCorrect).count()));
+        return 1;
+    }
+
+    private void saveAnswer(QuestionResponseDto question ,List<AnswerRequestDto> answers) throws EMException {
+        List<AnswerResponseDto> results = new ArrayList<>();
+        for (AnswerRequestDto answer : answers) {
+            answer.setQuestionId(question.getId());
+            var answerResponse = answerService.create(answer);
+            results.add(answerResponse);
+        }
+        question.setAnswers(results);
     }
 
     @Override
+    @Transactional
     public QuestionResponseDto update(Long id, QuestionRequestDto requestDto) throws EMException {
-        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
+        // Tìm question
+        var question = questionRepository.findById(id)
+                .orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
 
+        // Validate question
         validateQuestion(requestDto, false);
+        validateAnswer(requestDto.getAnswers());
 
+        // Cập nhật question
         questionMapper.setValue(requestDto, question);
-
-        //update câu trả lời
-
+        question.setCountCorrect(countCorrect(requestDto.getAnswers()));
         questionRepository.save(question);
-        return questionMapper.entityToResponse(question);
+        var response = questionMapper.entityToResponse(question);
+
+        // Xóa answers cũ
+        answerService.deleteByQuestionId(question.getId());
+        saveAnswer(response, requestDto.getAnswers());
+        return response;
     }
 
     @Override
-    public Boolean delete(Long id) {
-        return null;
+    public Boolean deleteById(Long id) throws EMException {
+        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
+        answerService.deleteByQuestionId(id);
+        questionRepository.delete(question);
+        return true;
     }
 
 //    @Override

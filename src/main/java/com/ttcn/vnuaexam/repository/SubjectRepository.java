@@ -16,15 +16,15 @@ import java.util.List;
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findByCode(String code);
 
-    @Query(value = " FROM Subject s WHERE s.code = :code AND s.id <> :id ")
-    List<Subject> findByCodeAndNotId(String code, Long id);
+    List<Subject> findByName(String name);
+
+    @Query(value = " FROM Subject s WHERE s.name = :name AND s.id <> :id ")
+    List<Subject> findByNameAndNotId(String name, Long id);
 
     @Query(value = "SELECT s.id AS id, " +
             " s.code AS code, " +
-            " s.name AS name, " +
-            " s.department_id AS departmentId " +
+            " s.name AS name," +
             " FROM tbl_subject s " +
-            " LEFT JOIN tbl_department d ON s.department_id = d.id " +
             " WHERE (:#{#dto.keyword} IS NULL OR :#{#dto.keyword} = '' OR " +
             " s.code LIKE CONCAT('%', :#{#dto.keyword}, '%') OR " +
             " s.name LIKE CONCAT('%', :#{#dto.keyword}, '%')) AND " +
@@ -39,4 +39,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
                     " s.department_id = :#{#dto.departmentId})",
             nativeQuery = true)
     Page<SubjectResultSetResponse> search(@Param("dto") SubjectSearchDto dto, Pageable pageable);
+
 }

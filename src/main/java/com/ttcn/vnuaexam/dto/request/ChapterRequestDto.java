@@ -8,11 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class SubjectRequestDto extends BaseObjectDto {
+@AllArgsConstructor
+public class ChapterRequestDto extends BaseObjectDto {
     private Long id;
-    private String code;
+    private Long subjectId;
     private String name;
     private String description;
 }
