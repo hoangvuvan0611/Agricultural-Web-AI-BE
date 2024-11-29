@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.dto.BaseObjectDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentResponseDto {
+public class ChapterResponseDto extends BaseObjectDto {
     private Long id;
-    private String code;
+    private Long subjectId;
     private String name;
     private String description;
 }

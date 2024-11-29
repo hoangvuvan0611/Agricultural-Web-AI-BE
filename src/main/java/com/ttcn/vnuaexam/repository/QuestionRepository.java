@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findByCode(String code);
+    List<Question> findByContent(String content);
 
-    @Query(" FROM Question q WHERE q.code = :code AND q.id <> :id ")
-    List<Question> findByCodeAndNotId(String code, Long id);
+    @Query(" FROM Question q WHERE q.content = :content AND q.id <> :id ")
+    List<Question> findByContentAndNotId(String content, Long id);
 }

@@ -6,7 +6,6 @@ import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
 import com.ttcn.vnuaexam.dto.search.SubjectSearchDto;
 import com.ttcn.vnuaexam.entity.Subject;
 import com.ttcn.vnuaexam.exception.EMException;
-import com.ttcn.vnuaexam.repository.DepartmentRepository;
 import com.ttcn.vnuaexam.repository.SubjectRepository;
 import com.ttcn.vnuaexam.service.SubjectService;
 import com.ttcn.vnuaexam.service.mapper.SubjectMapper;
@@ -26,7 +25,6 @@ import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 @AllArgsConstructor
 @Service
 public class SubjectServiceImpl implements SubjectService {
-    private final DepartmentRepository departmentRepository;
     private SubjectMapper subjectMapper;
     private SubjectRepository subjectRepository;
 
@@ -53,20 +51,20 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     private void validateSubject(SubjectRequestDto requestDto, boolean isCreate) throws EMException {
-        // Kiểm tra code, name trống
-        if(!StringUtils.hasText(requestDto.getCode()) || !StringUtils.hasText(requestDto.getName())){
-            throw new EMException(SUBJECT_NAME_OR_CODE_IS_EMPTY);
+        // Kiểm tra name trống
+        if(!StringUtils.hasText(requestDto.getName())){
+            throw new EMException(SUBJECT_NAME_IS_EMPTY);
         }
 
-        // Kiểm tra code tồn tại chưa
+        // Kiểm tra name tồn tại chưa
         List<Subject> subjects;
         if (isCreate)
-            subjects = subjectRepository.findByCode(requestDto.getCode());
+            subjects = subjectRepository.findByName(requestDto.getName());
         else
-            subjects = subjectRepository.findByCodeAndNotId(requestDto.getCode(), requestDto.getId());
+            subjects = subjectRepository.findByNameAndNotId(requestDto.getName(), requestDto.getId());
 
         if (!CollectionUtils.isEmpty(subjects))
-            throw new EMException(SUBJECT_CODE_IS_EXIST);
+            throw new EMException(SUBJECT_NAME_IS_EXIST);
     }
 
     @Override

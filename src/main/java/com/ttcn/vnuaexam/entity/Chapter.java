@@ -12,17 +12,12 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "tbl_department")
+@Table(name = "tbl_chapter")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Department {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "code")
-    private String code;
+public class Chapter extends BaseEntity {
+    @Column(name = "subject_id")
+    private Long subjectId;
 
     @Column(name = "name")
     private String name;

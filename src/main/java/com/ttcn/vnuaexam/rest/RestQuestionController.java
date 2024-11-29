@@ -1,27 +1,20 @@
 package com.ttcn.vnuaexam.rest;
 
-import com.ttcn.vnuaexam.dto.request.DepartmentRequestDto;
 import com.ttcn.vnuaexam.dto.request.QuestionRequestDto;
-import com.ttcn.vnuaexam.dto.response.DepartmentResponseDto;
 import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
-import com.ttcn.vnuaexam.dto.search.DepartmentSearchDto;
-import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
-import com.ttcn.vnuaexam.service.DepartmentService;
 import com.ttcn.vnuaexam.service.QuestionService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/questions")
+@RequestMapping("/api/questions")
 @RequiredArgsConstructor
 public class RestQuestionController {
     private final QuestionService questionService;
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public EMResponse<QuestionResponseDto> getById(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(questionService.getById(id));
     }
@@ -36,9 +29,9 @@ public class RestQuestionController {
         return new EMResponse<>(questionService.update(id, requestDto));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
-        return new EMResponse<>(questionService.delete(id));
+        return new EMResponse<>(questionService.deleteById(id));
     }
 
 //    @GetMapping("/search")

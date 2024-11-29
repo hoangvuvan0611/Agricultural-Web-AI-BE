@@ -7,4 +7,6 @@ import com.ttcn.vnuaexam.exception.EMException;
 
 public interface AnswerService {
     AnswerResponseDto create(AnswerRequestDto requestDto) throws EMException;
+
+    void deleteByQuestionId(Long questionId) throws EMException;
 }
