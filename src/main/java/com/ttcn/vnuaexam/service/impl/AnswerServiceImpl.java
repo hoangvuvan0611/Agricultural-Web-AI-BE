@@ -11,6 +11,8 @@ import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
@@ -26,11 +28,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void deleteByQuestionId(Long id) throws EMException {
-        if (!questionRepository.existsById(id)) {
+    public Boolean deleteById(Long id) throws EMException {
+        if (!answerRepository.existsById(id)) {
             throw new EMException(ErrorCodeEnum.NOT_FOUND);
         }
-        answerRepository.deleteByQuestionId(id);
+        answerRepository.deleteById(id);
+        return true;
     }
-
 }

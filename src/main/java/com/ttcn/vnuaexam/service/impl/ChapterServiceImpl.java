@@ -2,12 +2,17 @@ package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.dto.request.ChapterRequestDto;
 import com.ttcn.vnuaexam.dto.response.ChapterResponseDto;
+import com.ttcn.vnuaexam.dto.search.ChapterSearchDto;
 import com.ttcn.vnuaexam.entity.Chapter;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.ChapterRepository;
+import com.ttcn.vnuaexam.repository.QuestionRepository;
 import com.ttcn.vnuaexam.service.ChapterService;
 import com.ttcn.vnuaexam.service.mapper.ChapterMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -22,6 +27,7 @@ import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 public class ChapterServiceImpl implements ChapterService {
     private final ChapterMapper chapterMapper;
     private final ChapterRepository chapterRepository;
+    private final QuestionRepository questionRepository;
 
     @Override
     public ChapterResponseDto getById(Long id) throws EMException {
@@ -45,12 +51,23 @@ public class ChapterServiceImpl implements ChapterService {
         return chapterMapper.entityToResponse(chapter);
     }
 
-    private void validateChapter(ChapterRequestDto requestDto, boolean isCreate) throws EMException {
-        // Kiểm tra name
-        if(!StringUtils.hasText(requestDto.getName())){
-            throw new EMException(CHAPTER_NAME_IS_EMPTY);
-        }
+    @Override
+    public ChapterResponseDto update(ChapterRequestDto requestDto, Long id) throws EMException {
+        //lấy ra entity theo id
+        var chapter = chapterRepository.findById(id)
+                .orElseThrow(() -> new EMException(NOT_FOUND));
 
+        //validate request
+        requestDto.setId(id);
+        validateChapter(requestDto, false);
+
+        //update entity
+        chapterMapper.setValue(requestDto, chapter);
+        chapter = chapterRepository.save(chapter);
+        return chapterMapper.entityToResponse(chapter);
+    }
+
+    private void validateChapter(ChapterRequestDto requestDto, boolean isCreate) throws EMException {
         // Kiểm tra name tồn tại trong môn chưa
         List<Chapter> chapters;
         if (isCreate)
@@ -63,24 +80,17 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public ChapterResponseDto update(ChapterRequestDto requestDto, Long id) throws EMException {
-        //lấy ra entity theo id
-        var chapter = chapterRepository.findById(id)
-                .orElseThrow(() -> new EMException(NOT_FOUND));
-
-        //validate request
-        validateChapter(requestDto, false);
-
-        //update entity
-        chapterMapper.setValue(requestDto, chapter);
-        chapter = chapterRepository.save(chapter);
-        return chapterMapper.entityToResponse(chapter);
+    public Boolean deleteById(Long id) throws EMException {
+        var department = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER));
+        questionRepository.deleteByChapterId(id);
+        chapterRepository.delete(department);
+        return true;
     }
 
     @Override
-    public Boolean deleteById(Long id) throws EMException {
-        var department = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER));
-        chapterRepository.delete(department);
-        return true;
+    public Page<ChapterResponseDto> search(ChapterSearchDto dto) {
+        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        var chapterEntities = chapterRepository.search(dto, pageRequest);
+        return chapterEntities.map(chapterMapper::entityToResponse);
     }
 }

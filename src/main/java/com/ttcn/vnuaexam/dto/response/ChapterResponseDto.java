@@ -13,6 +13,7 @@ import lombok.Setter;
 public class ChapterResponseDto extends BaseObjectDto {
     private Long id;
     private Long subjectId;
+    private String subjectName;
     private String name;
     private String description;
 }

@@ -1,9 +1,11 @@
 package com.ttcn.vnuaexam.dto.request;
 
+import com.ttcn.vnuaexam.dto.BaseObjectDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 
 import java.util.Date;
 
@@ -11,14 +13,10 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileDescriptionRequestDto {
-    private String id;
-    private Date createDate;
-    private String createBy;
-    private String modifiedBy;
-    private Date modifyDate;
+public class FileDescriptionRequestDto extends BaseObjectDto {
+    private Long id;
     private int contentSize;
     private String contentType;
     private String name;
-
+    private String filePath;
 }

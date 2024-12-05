@@ -1,24 +1,28 @@
 package com.ttcn.vnuaexam.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tbl_answer")
-public class Exam {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = "tbl_exam")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Exam extends BaseEntity {
+    @Column(name = "subject_id")
+    private Long subjectId;
 
-    @ManyToOne
-    @JoinColumn(name = "subject_id" , referencedColumnName = "id")
-    private Subject subject;
-
-    @Column(name = "created_by")
-    private String createdBy;
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "title")
     private String title;
@@ -27,23 +31,20 @@ public class Exam {
     private String description;
 
     @Column(name = "duration")
-    private int duration;
+    private Integer duration;
 
     @Column(name = "total_questions")
-    private int totalQuestions;
+    private Integer totalQuestions;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
-
-    @Column(name = "create_date")
-    private Date createDate;
-
-    @Column(name = "modified_by")
-    private String modifiedBy;
-
-    @Column(name = "modify_date")
-    private Date modifyDate;
+    @Column(name = "total_score")
+    private BigDecimal totalScore;
 
     @Column(name = "exam_date")
-    private Date examDate;
+    private LocalDateTime examDate;
+
+    @Column(name = "status")
+    private Integer status;
+
+    @Column(name = "had_question")
+    private Integer hadQuestion;
 }
