@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.rest;
 
+import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
 import com.ttcn.vnuaexam.dto.request.QuestionRequestDto;
 import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -7,6 +8,8 @@ import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
@@ -29,13 +32,8 @@ public class RestQuestionController {
         return new EMResponse<>(questionService.update(id, requestDto));
     }
 
-    @DeleteMapping("/{id}")
-    public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
-        return new EMResponse<>(questionService.deleteById(id));
+    @DeleteMapping("/list-question")
+    public EMResponse<String> delete(@RequestBody ExamRequestDto dto) throws EMException {
+        return new EMResponse<>(questionService.deleteByIds(dto.getQuestionIds()));
     }
-
-//    @GetMapping("/search")
-//    public EMResponse<Page<QuestionResponseDto>> search(QuestionSearchDto searchDto){
-//        return new EMResponse<>(questionService.search(searchDto));
-//    }
 }

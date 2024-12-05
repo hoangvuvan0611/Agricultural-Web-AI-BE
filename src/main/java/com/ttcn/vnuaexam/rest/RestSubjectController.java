@@ -2,6 +2,7 @@ package com.ttcn.vnuaexam.rest;
 
 import com.ttcn.vnuaexam.dto.request.SubjectRequestDto;
 import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.dto.search.SubjectSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
@@ -31,13 +32,14 @@ public class RestSubjectController {
         return new EMResponse<>(subjectService.update(requestDto, id));
     }
 
+    // Xem lại
     @DeleteMapping("/{id}")
     public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(subjectService.deleteById(id));
     }
 
     @GetMapping("/search")
-    public EMResponse<Page<SubjectResponseDto>> search(SubjectSearchDto searchDto) {
-        return new EMResponse<>(subjectService.searchSubject(searchDto));
+    public EMResponse<Page<SubjectResponseDto>> search(SearchDto dto) {
+        return new EMResponse<>(subjectService.searchSubject(dto));
     }
 }

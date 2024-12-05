@@ -1,28 +1,24 @@
 package com.ttcn.vnuaexam.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_exam_question")
-public class ExamQuestion {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ExamQuestion extends BaseEntity {
+    @Column(name = "exam_id")
+    private Long examId;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_id", referencedColumnName = "id")
-    private Exam exam;
+    @Column(name = "question_id")
+    private Long questionId;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
-    private Question question;
-
-    @Column(name = "score")
-    private double score;
-
-    @Column(name = "order_number")
-    private int orderNumber;
+    @Column(name = "question_order")
+    private Integer questionOrder;
 }

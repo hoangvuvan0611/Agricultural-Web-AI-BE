@@ -7,8 +7,7 @@ import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.entity.Question;
 import com.ttcn.vnuaexam.exception.EMException;
-import com.ttcn.vnuaexam.repository.AnswerRepository;
-import com.ttcn.vnuaexam.repository.QuestionRepository;
+import com.ttcn.vnuaexam.repository.*;
 import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.QuestionService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.yaml.snakeyaml.emitter.EmitterException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +35,9 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerMapper answerMapper;
     private final AnswerRepository answerRepository;
     private final AnswerService answerService;
+    private final ChapterRepository chapterRepository;
+    private final ExamQuestionRepository examQuestionRepository;
+    private final ExamRepository examRepository;
 
     @Override
     public QuestionResponseDto getById(Long id) throws EMException {
@@ -55,6 +56,30 @@ public class QuestionServiceImpl implements QuestionService {
         var result = questionMapper.entityToResponse(question);
         result.setAnswers(answerResponses);
         return result;
+    }
+
+    @Override
+    public List<QuestionResponseDto> getAllByIds(List<Long> ids) throws EMException {
+        if (CollectionUtils.isEmpty(ids)) {
+            throw new EMException(QUESTION_ID_IS_NOT_EXIST);
+        }
+
+        var questions = questionRepository.findAllById(ids);
+        List<QuestionResponseDto> questionResponses = new ArrayList<>();
+
+        for (Question question : questions) {
+            List<Answer> answers = answerRepository.findByQuestionId(question.getId());
+
+            List<AnswerResponseDto> answerResponses = answers.stream()
+                    .filter(Objects::nonNull)
+                    .map(answerMapper::entityToResponse)
+                    .collect(Collectors.toList());
+
+            var questionResponseDto = questionMapper.entityToResponse(question);
+            questionResponseDto.setAnswers(answerResponses);
+            questionResponses.add(questionResponseDto);
+        }
+        return questionResponses;
     }
 
     @Override
@@ -151,17 +176,29 @@ public class QuestionServiceImpl implements QuestionService {
         var response = questionMapper.entityToResponse(question);
 
         // Xóa answers cũ
-        answerService.deleteByQuestionId(question.getId());
+        answerRepository.deleteByQuestionId(question.getId());
         saveAnswer(response, requestDto.getAnswers());
         return response;
     }
 
     @Override
-    public Boolean deleteById(Long id) throws EMException {
-        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
-        answerService.deleteByQuestionId(id);
-        questionRepository.delete(question);
-        return true;
+    @Transactional(rollbackFor = {EMException.class})
+    public String deleteByIds(List<Long> ids) {
+        StringBuilder messages = new StringBuilder();
+        for (Long id : ids) {
+            if (!questionRepository.existsById(id)) {
+                String errorMessage = NOT_FOUND.getMessage();
+                messages.append(errorMessage);
+                continue;
+            }
+            examQuestionRepository.deleteByQuestionId(id);
+            answerRepository.deleteByQuestionId(id);
+            questionRepository.deleteById(id);
+        }
+        if (!messages.isEmpty()) {
+            return messages.toString();
+        }
+        return SUCCESS.getMessage();
     }
 
 //    @Override

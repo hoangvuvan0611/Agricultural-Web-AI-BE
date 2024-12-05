@@ -2,11 +2,14 @@ package com.ttcn.vnuaexam.rest;
 
 import com.ttcn.vnuaexam.dto.request.ChapterRequestDto;
 import com.ttcn.vnuaexam.dto.response.ChapterResponseDto;
+import com.ttcn.vnuaexam.dto.search.ChapterSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ChapterService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,5 +36,10 @@ public class RestChapterController {
     @DeleteMapping("/{id}")
     public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(chapterService.deleteById(id));
+    }
+
+    @GetMapping("/search")
+    public EMResponse<Page<ChapterResponseDto>> search(ChapterSearchDto dto) throws EMException {
+        return new EMResponse<>(chapterService.search(dto));
     }
 }
