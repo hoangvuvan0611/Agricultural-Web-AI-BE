@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -33,10 +32,10 @@ public class ChapterServiceImpl implements ChapterService {
     public ChapterResponseDto getById(Long id) throws EMException {
         // Check id null, trống
         if (ObjectUtils.isEmpty(id)) {
-            throw new EMException(CHAPTER_ID_IS_NOT_EXIST);
+            throw new EMException(CHAPTER_ID_IS_NOT_EXIST, e);
         }
 
-        var chapter = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER));
+        var chapter = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER, e));
         return chapterMapper.entityToResponse(chapter);
     }
 
@@ -55,7 +54,7 @@ public class ChapterServiceImpl implements ChapterService {
     public ChapterResponseDto update(ChapterRequestDto requestDto, Long id) throws EMException {
         //lấy ra entity theo id
         var chapter = chapterRepository.findById(id)
-                .orElseThrow(() -> new EMException(NOT_FOUND));
+                .orElseThrow(() -> new EMException(NOT_FOUND, e));
 
         //validate request
         requestDto.setId(id);
@@ -76,12 +75,12 @@ public class ChapterServiceImpl implements ChapterService {
             chapters = chapterRepository.findByNameAndNotId(requestDto.getName(), requestDto.getId(), requestDto.getSubjectId());
 
         if (!CollectionUtils.isEmpty(chapters))
-            throw new EMException(CHAPTER_NAME_IS_EXIST);
+            throw new EMException(CHAPTER_NAME_IS_EXIST, e);
     }
 
     @Override
     public Boolean deleteById(Long id) throws EMException {
-        var department = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER));
+        var department = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER, e));
         questionRepository.deleteByChapterId(id);
         chapterRepository.delete(department);
         return true;

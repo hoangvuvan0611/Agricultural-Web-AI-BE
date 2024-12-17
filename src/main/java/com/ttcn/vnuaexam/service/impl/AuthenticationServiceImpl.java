@@ -60,13 +60,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse login(AuthenticationRequest request) throws EMException {
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new EMException(NOT_FOUND_USERNAME));
+                .orElseThrow(() -> new EMException(NOT_FOUND_USERNAME, e));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authentication = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authentication) {
-            throw new EMException(UNAUTHENTICATED);
+            throw new EMException(UNAUTHENTICATED, e);
         }
 
         var token = generateToken(user);
