@@ -29,7 +29,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamResponseDto getById(Long id) throws EMException {
         // Lay de thi
-        var exam = examRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        var exam = examRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND, e));
 
         //Lay danh sach id cau hoi
         var examQuestions = examQuestionRepository.findByExamId(exam.getId());
@@ -60,7 +60,7 @@ public class ExamServiceImpl implements ExamService {
         //validate request
 
         // update exam
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        Exam exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND, e));
         examMapper.setValue(examRequestDto, exam);
         examRepository.save(exam);
         return examMapper.entityToResponse(exam);
@@ -68,13 +68,13 @@ public class ExamServiceImpl implements ExamService {
 
     private void validateExam(ExamRequestDto examRequestDto) throws EMException {
         if (!subjectRepository.existsById(examRequestDto.getSubjectId())) {
-            throw new EMException(ErrorCodeEnum.SUBJECT_ID_IS_NOT_EXIST);
+            throw new EMException(ErrorCodeEnum.SUBJECT_ID_IS_NOT_EXIST, e);
         }
     }
 
     @Override
     public ErrorCodeEnum saveQuestion(Long examId, List<Long> questionIds) throws EMException {
-        var exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        var exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND, e));
         int hadQuestion = exam.getHadQuestion();
         for (var questionId : questionIds) {
             if (isDuplicateQuestion(exam, questionId))
