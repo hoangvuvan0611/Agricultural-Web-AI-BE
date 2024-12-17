@@ -14,10 +14,6 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "username")
     @Length(max = 18, message = MessageCodes.NOT_TOO_LONG)

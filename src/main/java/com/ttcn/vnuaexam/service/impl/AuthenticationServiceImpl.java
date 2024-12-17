@@ -10,6 +10,7 @@ import com.ttcn.vnuaexam.authentication.AuthenticationResponse;
 import com.ttcn.vnuaexam.authentication.IntrospectRequest;
 import com.ttcn.vnuaexam.authentication.IntrospectResponse;
 import com.ttcn.vnuaexam.constant.enums.Role;
+import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.UserRepository;
@@ -60,13 +61,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse login(AuthenticationRequest request) throws EMException {
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new EMException(NOT_FOUND_USERNAME, e));
+                .orElseThrow(() -> new EMException(NOT_FOUND_USERNAME));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authentication = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authentication) {
-            throw new EMException(UNAUTHENTICATED, e);
+            throw new EMException(UNAUTHENTICATED);
         }
 
         var token = generateToken(user);
@@ -74,6 +75,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
+                .username(user.getUsername())
+                .code(user.getCode())
+                .fullName(user.getFullName())
+                .role(Role.formNumRole(user.getRole()))
                 .build();
     }
 

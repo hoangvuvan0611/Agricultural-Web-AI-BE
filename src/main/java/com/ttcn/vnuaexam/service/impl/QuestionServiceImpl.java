@@ -42,10 +42,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionResponseDto getById(Long id) throws EMException {
         if (ObjectUtils.isEmpty(id)) {
-            throw new EMException(QUESTION_ID_IS_NOT_EXIST, e);
+            throw new EMException(QUESTION_ID_IS_NOT_EXIST);
         }
 
-        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION, e));
+        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
         List<Answer> answers = answerRepository.findByQuestionId(question.getId());
 
         List<AnswerResponseDto> answerResponses = answers.stream()
@@ -61,7 +61,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionResponseDto> getAllByIds(List<Long> ids) throws EMException {
         if (CollectionUtils.isEmpty(ids)) {
-            throw new EMException(QUESTION_ID_IS_NOT_EXIST, e);
+            throw new EMException(QUESTION_ID_IS_NOT_EXIST);
         }
 
         var questions = questionRepository.findAllById(ids);
@@ -102,7 +102,7 @@ public class QuestionServiceImpl implements QuestionService {
     private void validateQuestion(QuestionRequestDto requestDto, boolean isCreate) throws EMException {
         // Kiểm tra code, name trống
         if(!StringUtils.hasText(requestDto.getContent())){
-            throw new EMException(QUESTION_CONTENT_IS_EMPTY, e);
+            throw new EMException(QUESTION_CONTENT_IS_EMPTY);
         }
 
         // Kiểm tra content tồn tại chưa
@@ -113,7 +113,7 @@ public class QuestionServiceImpl implements QuestionService {
             questions = questionRepository.findByContentAndNotId(requestDto.getContent(), requestDto.getId());
 
         if (!CollectionUtils.isEmpty(questions))
-            throw new EMException(QUESTION_CODE_IS_EXIST, e);
+            throw new EMException(QUESTION_CODE_IS_EXIST);
 
         // Kiểm tra câu trả lời
     }
@@ -123,19 +123,19 @@ public class QuestionServiceImpl implements QuestionService {
 
         // Phải có câu trả lời
         if (CollectionUtils.isEmpty(answerContents))
-            throw new EMException(QUESTION_NO_ANSWER, e);
+            throw new EMException(QUESTION_NO_ANSWER);
 
         // Câu trả lời không được trống
         if (answerContents.stream().anyMatch(String::isBlank))
-            throw new EMException(ANSWER_BLANK, e);
+            throw new EMException(ANSWER_BLANK);
 
         // Kiểm tra trùng lặp
         if (!hasUniqueAnswers(answerContents))
-            throw new EMException(DUPLICATE_ANSWER, e);
+            throw new EMException(DUPLICATE_ANSWER);
 
         // Kiểm tra đáp án đúng
         if (countCorrect(answers) < 1)
-            throw new EMException(DO_NOT_HAVE_CORRECT_ANSWER, e);
+            throw new EMException(DO_NOT_HAVE_CORRECT_ANSWER);
     }
 
     private boolean hasUniqueAnswers(List<String> answers) {
@@ -163,7 +163,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponseDto update(Long id, QuestionRequestDto requestDto) throws EMException {
         // Tìm question
         var question = questionRepository.findById(id)
-                .orElseThrow(() -> new EMException(NOT_FOUND_QUESTION, e));
+                .orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
 
         // Validate question
         validateQuestion(requestDto, false);

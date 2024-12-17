@@ -23,14 +23,10 @@ public class RestAuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/token")
+    @PostMapping("/login")
     public EMResponse<AuthenticationResponse> logIn(@RequestBody AuthenticationRequest authenticationRequest) throws EMException {
         var result = authenticationService.login(authenticationRequest);
-
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setAuthenticated(result.getAuthenticated());
-        authenticationResponse.setToken(result.getToken());
-        return new EMResponse<>(authenticationResponse);
+        return new EMResponse<>(result);
     }
 
     @PostMapping("/introspect")

@@ -25,9 +25,8 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
 
     private final String[] PUBLIC_URL_POST = {
-             "/auth/token"
+             "/auth/login"
             , "/auth/introspect"
-
     };
 
     @Value("${jwt.signer.key}")

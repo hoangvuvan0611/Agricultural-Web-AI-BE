@@ -11,8 +11,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "role", target = "role")
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(source = "role", target = "role")
     User requestToEntity(UserRequestDto requestDto);
 
     @Mapping(source = "role", target = "role")
