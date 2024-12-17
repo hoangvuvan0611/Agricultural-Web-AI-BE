@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FileDescription extends BaseEntity {
     @Column(name = "content_size")
-    private Integer contentSize;
+    private Long contentSize;
 
     @Column(name = "content_type")
     private String contentType;
