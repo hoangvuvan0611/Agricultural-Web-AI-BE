@@ -6,4 +6,13 @@
     <changeSet id="20241126_2125" author="SonDC">
         <sqlFile path="db/sql/20241126_2125_01_init_table.sql"/>
     </changeSet>
+    <changeSet id="20241130_1525" author="SonDC">
+        <sqlFile path="db/sql/20241130_1525_02_add_column_exam_question.sql"/>
+    </changeSet>
+    <changeSet id="20241130_2211" author="SonDC">
+        <sqlFile path="db/sql/20241130_2211_03_add_column_exam.sql"/>
+    </changeSet>
+    <changeSet id="20241215_2031" author="SonDC">
+        <sqlFile path="db/sql/20241215_2031_04_foreign_key_off.sql"/>
+    </changeSet>
 </databaseChangeLog>

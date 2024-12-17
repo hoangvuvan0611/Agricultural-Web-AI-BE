@@ -7,8 +7,7 @@ import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.entity.Question;
 import com.ttcn.vnuaexam.exception.EMException;
-import com.ttcn.vnuaexam.repository.AnswerRepository;
-import com.ttcn.vnuaexam.repository.QuestionRepository;
+import com.ttcn.vnuaexam.repository.*;
 import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.QuestionService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.yaml.snakeyaml.emitter.EmitterException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,14 +35,17 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerMapper answerMapper;
     private final AnswerRepository answerRepository;
     private final AnswerService answerService;
+    private final ChapterRepository chapterRepository;
+    private final ExamQuestionRepository examQuestionRepository;
+    private final ExamRepository examRepository;
 
     @Override
     public QuestionResponseDto getById(Long id) throws EMException {
         if (ObjectUtils.isEmpty(id)) {
-            throw new EMException(QUESTION_ID_IS_NOT_EXIST);
+            throw new EMException(QUESTION_ID_IS_NOT_EXIST, e);
         }
 
-        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
+        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION, e));
         List<Answer> answers = answerRepository.findByQuestionId(question.getId());
 
         List<AnswerResponseDto> answerResponses = answers.stream()
@@ -55,6 +56,30 @@ public class QuestionServiceImpl implements QuestionService {
         var result = questionMapper.entityToResponse(question);
         result.setAnswers(answerResponses);
         return result;
+    }
+
+    @Override
+    public List<QuestionResponseDto> getAllByIds(List<Long> ids) throws EMException {
+        if (CollectionUtils.isEmpty(ids)) {
+            throw new EMException(QUESTION_ID_IS_NOT_EXIST, e);
+        }
+
+        var questions = questionRepository.findAllById(ids);
+        List<QuestionResponseDto> questionResponses = new ArrayList<>();
+
+        for (Question question : questions) {
+            List<Answer> answers = answerRepository.findByQuestionId(question.getId());
+
+            List<AnswerResponseDto> answerResponses = answers.stream()
+                    .filter(Objects::nonNull)
+                    .map(answerMapper::entityToResponse)
+                    .collect(Collectors.toList());
+
+            var questionResponseDto = questionMapper.entityToResponse(question);
+            questionResponseDto.setAnswers(answerResponses);
+            questionResponses.add(questionResponseDto);
+        }
+        return questionResponses;
     }
 
     @Override
@@ -77,7 +102,7 @@ public class QuestionServiceImpl implements QuestionService {
     private void validateQuestion(QuestionRequestDto requestDto, boolean isCreate) throws EMException {
         // Kiểm tra code, name trống
         if(!StringUtils.hasText(requestDto.getContent())){
-            throw new EMException(QUESTION_CONTENT_IS_EMPTY);
+            throw new EMException(QUESTION_CONTENT_IS_EMPTY, e);
         }
 
         // Kiểm tra content tồn tại chưa
@@ -88,7 +113,7 @@ public class QuestionServiceImpl implements QuestionService {
             questions = questionRepository.findByContentAndNotId(requestDto.getContent(), requestDto.getId());
 
         if (!CollectionUtils.isEmpty(questions))
-            throw new EMException(QUESTION_CODE_IS_EXIST);
+            throw new EMException(QUESTION_CODE_IS_EXIST, e);
 
         // Kiểm tra câu trả lời
     }
@@ -98,19 +123,19 @@ public class QuestionServiceImpl implements QuestionService {
 
         // Phải có câu trả lời
         if (CollectionUtils.isEmpty(answerContents))
-            throw new EMException(QUESTION_NO_ANSWER);
+            throw new EMException(QUESTION_NO_ANSWER, e);
 
         // Câu trả lời không được trống
         if (answerContents.stream().anyMatch(String::isBlank))
-            throw new EMException(ANSWER_BLANK);
+            throw new EMException(ANSWER_BLANK, e);
 
         // Kiểm tra trùng lặp
         if (!hasUniqueAnswers(answerContents))
-            throw new EMException(DUPLICATE_ANSWER);
+            throw new EMException(DUPLICATE_ANSWER, e);
 
         // Kiểm tra đáp án đúng
         if (countCorrect(answers) < 1)
-            throw new EMException(DO_NOT_HAVE_CORRECT_ANSWER);
+            throw new EMException(DO_NOT_HAVE_CORRECT_ANSWER, e);
     }
 
     private boolean hasUniqueAnswers(List<String> answers) {
@@ -138,7 +163,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponseDto update(Long id, QuestionRequestDto requestDto) throws EMException {
         // Tìm question
         var question = questionRepository.findById(id)
-                .orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
+                .orElseThrow(() -> new EMException(NOT_FOUND_QUESTION, e));
 
         // Validate question
         validateQuestion(requestDto, false);
@@ -151,17 +176,29 @@ public class QuestionServiceImpl implements QuestionService {
         var response = questionMapper.entityToResponse(question);
 
         // Xóa answers cũ
-        answerService.deleteByQuestionId(question.getId());
+        answerRepository.deleteByQuestionId(question.getId());
         saveAnswer(response, requestDto.getAnswers());
         return response;
     }
 
     @Override
-    public Boolean deleteById(Long id) throws EMException {
-        var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
-        answerService.deleteByQuestionId(id);
-        questionRepository.delete(question);
-        return true;
+    @Transactional(rollbackFor = {EMException.class})
+    public String deleteByIds(List<Long> ids) {
+        StringBuilder messages = new StringBuilder();
+        for (Long id : ids) {
+            if (!questionRepository.existsById(id)) {
+                String errorMessage = NOT_FOUND.getMessage();
+                messages.append(errorMessage);
+                continue;
+            }
+            examQuestionRepository.deleteByQuestionId(id);
+            answerRepository.deleteByQuestionId(id);
+            questionRepository.deleteById(id);
+        }
+        if (!messages.isEmpty()) {
+            return messages.toString();
+        }
+        return SUCCESS.getMessage();
     }
 
 //    @Override

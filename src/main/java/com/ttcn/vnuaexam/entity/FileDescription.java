@@ -1,32 +1,23 @@
 package com.ttcn.vnuaexam.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table(name = "file_description")
-public class FileDescription {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
-    @Column(name = "create_date")
-    private Date createDate;
-
-    @Column(name = "create_by")
-    private String createBy;
-
-    @Column(name = "modified_by")
-    private String modifiedBy;
-
-    @Column(name = "modify_date")
-    private Date modifyDate;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class FileDescription extends BaseEntity {
     @Column(name = "content_size")
-    private int contentSize;
+    private Long contentSize;
 
     @Column(name = "content_type")
     private String contentType;
@@ -34,4 +25,6 @@ public class FileDescription {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "file_path")
+    private String filePath;
 }

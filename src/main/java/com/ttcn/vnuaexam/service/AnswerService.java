@@ -5,8 +5,10 @@ import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.exception.EMException;
 
+import java.util.List;
+
 public interface AnswerService {
     AnswerResponseDto create(AnswerRequestDto requestDto) throws EMException;
 
-    void deleteByQuestionId(Long questionId) throws EMException;
+    Boolean deleteById(Long id) throws EMException;
 }

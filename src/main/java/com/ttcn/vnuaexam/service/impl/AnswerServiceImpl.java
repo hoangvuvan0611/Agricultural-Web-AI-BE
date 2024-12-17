@@ -26,11 +26,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void deleteByQuestionId(Long id) throws EMException {
-        if (!questionRepository.existsById(id)) {
-            throw new EMException(ErrorCodeEnum.NOT_FOUND);
+    public Boolean deleteById(Long id) throws EMException {
+        if (!answerRepository.existsById(id)) {
+            throw new EMException(ErrorCodeEnum.NOT_FOUND, e);
         }
-        answerRepository.deleteByQuestionId(id);
+        answerRepository.deleteById(id);
+        return true;
     }
-
 }

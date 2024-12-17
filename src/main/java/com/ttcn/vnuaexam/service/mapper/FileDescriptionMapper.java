@@ -5,21 +5,15 @@ import com.ttcn.vnuaexam.dto.response.FileDescriptionResponseDto;
 import com.ttcn.vnuaexam.entity.FileDescription;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.UUID;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface FileDescriptionMapper {
-//    @Mapping(source = "id", target = "id", conditionExpression = "java(fileDescriptionRequestDto.getId() != null)")
-//    FileDescription requestToEntity(FileDescriptionRequestDto fileDescriptionRequestDto);
-//
-//    FileDescriptionResponseDto entityToResponse(FileDescription fileDescription);
-//
-//    default String map(UUID value) {
-//        return value != null ? value.toString() : null;
-//    }
-//
-//    default UUID map(String value) {
-//        return value != null ? UUID.fromString(value) : null;
-//    }
+    @Mapping(target = "id", ignore = true)
+    FileDescription requestToEntity(FileDescriptionRequestDto requestDto);
+
+    FileDescriptionResponseDto entityToResponse(FileDescription entity);
+
+    @Mapping(target = "id", ignore = true)
+    void setValue(FileDescriptionRequestDto requestDto,@MappingTarget FileDescription entity);
 }

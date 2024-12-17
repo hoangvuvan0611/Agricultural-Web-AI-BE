@@ -1,22 +1,30 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.dto.BaseObjectDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
-public class ExamResponseDto {
-    private String id;
-    private String subjectId;
-    private String createdBy;
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExamResponseDto extends BaseObjectDto {
+    private Long id;
+    private Long subjectId;
+    private String code;
     private String title;
     private String description;
-    private int duration;
-    private int totalQuestions;
-    private Boolean isActive;
-    private Date createDate;
-    private String modifiedBy;
-    private Date modifyDate;
-    private Date examDate;
+    private Integer duration;
+    private Integer totalQuestions;
+    private BigDecimal totalScore;
+    private LocalDateTime examDate;
+    private Integer status;
+    private Integer hadQuestion;
+    private List<QuestionResponseDto> questions;
 }

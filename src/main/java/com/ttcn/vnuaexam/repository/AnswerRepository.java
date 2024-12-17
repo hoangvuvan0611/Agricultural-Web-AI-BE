@@ -12,4 +12,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByQuestionId(Long questionId);
 
     void deleteByQuestionId(Long questionId);
+
+    @Query(" DELETE FROM Answer ans WHERE ans.questionId in : ids")
+    void deleteByQuestionIds(List<Long> ids);
 }

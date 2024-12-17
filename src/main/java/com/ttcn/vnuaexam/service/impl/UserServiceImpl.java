@@ -8,7 +8,6 @@ import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
     private void validateUser(UserRequestDto userRequestDto, boolean isCreate) throws EMException {
         //Kiểm tra code có trống
         if (!StringUtils.hasText(userRequestDto.getCode())) {
-            throw new EMException(CODE_IS_EMPTY);
+            throw new EMException(CODE_IS_EMPTY, e);
         }
 
         //Kiểm tra có trùng code
@@ -47,12 +46,12 @@ public class UserServiceImpl implements UserService {
         }
 
         if (usersWithCode.isPresent()) {
-            throw new EMException(USER_CODE_ALREADY_EXISTS);
+            throw new EMException(USER_CODE_ALREADY_EXISTS, e);
         }
 
         //Kiểm tra usernam có trống
         if (!StringUtils.hasText(userRequestDto.getUsername())) {
-            throw new EMException(USER_NAME_NOT_EMPTY);
+            throw new EMException(USER_NAME_NOT_EMPTY, e);
         }
         //kieemr tra có trùng username
         Optional<User> usersWithUsername;
@@ -64,7 +63,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (usersWithUsername.isPresent()) {
-            throw new EMException(USER_NAME_ALREADY_EXISTS);
+            throw new EMException(USER_NAME_ALREADY_EXISTS, e);
         }
 
     }
@@ -84,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
 
         validateUser(userRequestDto, false);
         userMapper.setValue(userRequestDto, user);
@@ -98,13 +97,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserById(Long id) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
         return userMapper.entityToResponse(user);
     }
 
     @Override
     public boolean deleteUser(Long id) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
         userRepository.delete(user);
         return true;
     }

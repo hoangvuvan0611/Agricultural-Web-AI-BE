@@ -5,23 +5,15 @@ import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
 import com.ttcn.vnuaexam.entity.Exam;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.UUID;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ExamMapper {
-//    @Mapping(target = "id", source = "id", conditionExpression = "java(examRequestDto.getId() != null)")
-//    Exam RequestToEntity(ExamRequestDto examRequestDto);
-//
-//    @Mapping(source = "id", target = "id")
-//    ExamResponseDto EntityToResponseDto(Exam exam);
-//
-//    default String map(UUID value) {
-//        return value != null ? value.toString() : null;
-//    }
-//
-//    default UUID map(String value) {
-//        return value != null ? UUID.fromString(value) : null;
-//    }
+    @Mapping(target = "id", ignore = true)
+    Exam requestToEntity(ExamRequestDto examRequestDto);
 
+    ExamResponseDto entityToResponse(Exam exam);
+
+    @Mapping(target = "id", ignore = true)
+    void setValue(ExamRequestDto examRequestDto,@MappingTarget Exam exam);
 }

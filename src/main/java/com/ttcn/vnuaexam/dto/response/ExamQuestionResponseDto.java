@@ -1,14 +1,18 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.dto.BaseObjectDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ExamQuestionResponseDto {
-    private String id;
-    private String examId;
-    private String questionId;
-    private double score;
-    private int orderNumber;
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExamQuestionResponseDto extends BaseObjectDto {
+    private Long id;
+    private Long examId;
+    private Long questionId;
+    private Integer questionOrder;
 }
