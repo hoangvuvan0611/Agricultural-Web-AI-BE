@@ -39,10 +39,10 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectResponseDto getById(Long id) throws EMException {
         // Check id null, trống
         if (ObjectUtils.isEmpty(id)) {
-            throw new EMException(SUBJECT_ID_IS_NOT_EXIST, e);
+            throw new EMException(SUBJECT_ID_IS_NOT_EXIST);
         }
 
-        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND, e));
+        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND));
         return subjectMapper.entityToResponse(subject);
     }
 
@@ -59,7 +59,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectResponseDto update(SubjectRequestDto requestDto, Long id) throws EMException {
-        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_SUBJECT, e));
+        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_SUBJECT));
 
         requestDto.setId(id);
         validateSubject(requestDto, false);
@@ -72,7 +72,7 @@ public class SubjectServiceImpl implements SubjectService {
     private void validateSubject(SubjectRequestDto requestDto, boolean isCreate) throws EMException {
         // Kiểm tra name trống
         if(!StringUtils.hasText(requestDto.getName())){
-            throw new EMException(SUBJECT_NAME_IS_EMPTY, e);
+            throw new EMException(SUBJECT_NAME_IS_EMPTY);
         }
 
         // Kiểm tra name tồn tại chưa
@@ -83,14 +83,14 @@ public class SubjectServiceImpl implements SubjectService {
             subjects = subjectRepository.findByNameAndNotId(requestDto.getName(), requestDto.getId());
 
         if (!CollectionUtils.isEmpty(subjects))
-            throw new EMException(SUBJECT_NAME_IS_EXIST, e);
+            throw new EMException(SUBJECT_NAME_IS_EXIST);
     }
 
     // Xem lại
     @Override
     @Transactional(rollbackFor = {EMException.class})
     public Boolean deleteById(Long id) throws EMException {
-        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_SUBJECT, e));
+        var subject = subjectRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_SUBJECT));
         var questions = questionRepository.findBySubjectId(subject.getId());
         List<Long> questionIds = new ArrayList<>();
         for (var question : questions) {

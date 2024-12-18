@@ -2,10 +2,14 @@ package com.ttcn.vnuaexam.rest;
 
 import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
 import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
+import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
+import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
+import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ExamService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,5 +37,10 @@ public class RestExamController {
     @PostMapping("/question")
     public EMResponse<String> saveQuestion(@RequestBody ExamRequestDto requestDto) throws EMException {
         return new EMResponse<>(examService.saveQuestion(requestDto.getId(), requestDto.getQuestionIds()));
+    }
+
+    @GetMapping("/search")
+    public EMResponse<Page<ExamResponseDto>> search(ExamSearchDto dto) {
+        return new EMResponse<>(examService.search(dto));
     }
 }

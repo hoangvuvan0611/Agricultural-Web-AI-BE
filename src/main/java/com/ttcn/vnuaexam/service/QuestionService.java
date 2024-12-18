@@ -2,7 +2,9 @@ package com.ttcn.vnuaexam.service;
 
 import com.ttcn.vnuaexam.dto.request.QuestionRequestDto;
 import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
+import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,5 +19,5 @@ public interface QuestionService {
 
     String deleteByIds(List<Long> ids);
 
-//    Page<QuestionResponseDto> search(QuestionSearchDto searchDto);
+    Page<QuestionResponseDto> search(QuestionSearchDto searchDto);
 }

@@ -28,7 +28,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Boolean deleteById(Long id) throws EMException {
         if (!answerRepository.existsById(id)) {
-            throw new EMException(ErrorCodeEnum.NOT_FOUND, e);
+            throw new EMException(ErrorCodeEnum.NOT_FOUND);
         }
         answerRepository.deleteById(id);
         return true;
