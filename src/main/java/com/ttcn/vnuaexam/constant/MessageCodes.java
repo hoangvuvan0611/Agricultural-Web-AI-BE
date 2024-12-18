@@ -5,4 +5,6 @@ public class MessageCodes {
     public static final String NOT_BLANK = "errors.not_blank";
     public static final String NOT_TOO_LONG = "errors.not_too_long";
     public static final String NOT_WHITESPACE = "errors.not_whitespace";
+
+    public static final String EXCEL_EXTENSION_ERROR_MESSAGE = "Vui lòng upload file excel có định dạng .xls hoăc .xlsx.";
 }

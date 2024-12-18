@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
 import com.ttcn.vnuaexam.dto.BaseObjectDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,15 @@ public class ExamResponseDto extends BaseObjectDto {
     private Integer status;
     private Integer hadQuestion;
     private List<QuestionResponseDto> questions;
+
+    public ExamResponseDto(ExamResultSetResponse response) {
+        this.id = response.getId();
+        this.title = response.getTitle();
+        this.description = response.getDescription();
+        this.duration = response.getDuration();
+        this.totalQuestions = response.getTotalQuestions();
+        this.totalScore = response.getTotalScore();
+        this.status = response.getStatus();
+        this.hadQuestion = response.getHadQuestion();
+    }
 }

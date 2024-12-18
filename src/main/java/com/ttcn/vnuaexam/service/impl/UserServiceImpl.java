@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     private void validateUser(UserRequestDto userRequestDto, boolean isCreate) throws EMException {
         //Kiểm tra code có trống
         if (!StringUtils.hasText(userRequestDto.getCode())) {
-            throw new EMException(CODE_IS_EMPTY, e);
+            throw new EMException(CODE_IS_EMPTY);
         }
 
         //Kiểm tra có trùng code
@@ -46,14 +46,14 @@ public class UserServiceImpl implements UserService {
         }
 
         if (usersWithCode.isPresent()) {
-            throw new EMException(USER_CODE_ALREADY_EXISTS, e);
+            throw new EMException(USER_CODE_ALREADY_EXISTS);
         }
 
-        //Kiểm tra usernam có trống
+        //Kiểm tra username có trống
         if (!StringUtils.hasText(userRequestDto.getUsername())) {
-            throw new EMException(USER_NAME_NOT_EMPTY, e);
+            throw new EMException(USER_NAME_NOT_EMPTY);
         }
-        //kieemr tra có trùng username
+        // kiểm tra có trùng username
         Optional<User> usersWithUsername;
         if (isCreate) {
             usersWithUsername = userRepository.findByUsername(userRequestDto.getUsername());
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (usersWithUsername.isPresent()) {
-            throw new EMException(USER_NAME_ALREADY_EXISTS, e);
+            throw new EMException(USER_NAME_ALREADY_EXISTS);
         }
 
     }
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
 
         validateUser(userRequestDto, false);
         userMapper.setValue(userRequestDto, user);
@@ -97,13 +97,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserById(Long id) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
         return userMapper.entityToResponse(user);
     }
 
     @Override
     public boolean deleteUser(Long id) throws EMException {
-        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER, e));
+        User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
         userRepository.delete(user);
         return true;
     }

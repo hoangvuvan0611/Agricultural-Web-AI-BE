@@ -1,6 +1,12 @@
 package com.ttcn.vnuaexam.repository;
 
+import com.ttcn.vnuaexam.dto.search.ChapterSearchDto;
+import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
+import com.ttcn.vnuaexam.entity.Chapter;
 import com.ttcn.vnuaexam.entity.Question;
+import com.ttcn.vnuaexam.entity.Subject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +34,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findBySubjectId(Long subjectId);
 
     List<Question> findByChapterId(Long chapterId);
+
+    @Query(value = " FROM Question ques WHERE (:#{#dto.subjectId} is null OR ques.subjectId = :#{#dto.subjectId}) " +
+            " AND (:#{#dto.keyword} IS NULL OR :#{#dto.keyword} = ''" +
+            " OR ques.content LIKE CONCAT('%', :#{#dto.keyword}, '%'))")
+    Page<Question> search(@Param("dto") QuestionSearchDto dto, Pageable pageable);
 }
