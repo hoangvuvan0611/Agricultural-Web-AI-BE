@@ -1,8 +1,10 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
 import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
 import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
+import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
 import com.ttcn.vnuaexam.entity.Exam;
 import com.ttcn.vnuaexam.entity.ExamQuestion;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -12,7 +14,10 @@ import com.ttcn.vnuaexam.repository.SubjectRepository;
 import com.ttcn.vnuaexam.service.ExamService;
 import com.ttcn.vnuaexam.service.QuestionService;
 import com.ttcn.vnuaexam.service.mapper.ExamMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,5 +96,12 @@ public class ExamServiceImpl implements ExamService {
         List<ExamQuestion> examQuestions = examQuestionRepository.findByExamId(exam.getId());
         return examQuestions.stream()
                 .anyMatch(eq -> eq.getQuestionId().equals(questionId));
+    }
+
+    @Override
+    public Page<ExamResponseDto> search(ExamSearchDto searchDto) {
+        Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
+        Page<ExamResultSetResponse> examResult = examRepository.search(searchDto, pageRequest);
+        return examResult.map(ExamResponseDto::new);
     }
 }

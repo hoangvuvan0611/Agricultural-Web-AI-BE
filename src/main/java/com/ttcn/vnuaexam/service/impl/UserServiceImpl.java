@@ -49,11 +49,11 @@ public class UserServiceImpl implements UserService {
             throw new EMException(USER_CODE_ALREADY_EXISTS);
         }
 
-        //Kiểm tra usernam có trống
+        //Kiểm tra username có trống
         if (!StringUtils.hasText(userRequestDto.getUsername())) {
             throw new EMException(USER_NAME_NOT_EMPTY);
         }
-        //kieemr tra có trùng username
+        // kiểm tra có trùng username
         Optional<User> usersWithUsername;
         if (isCreate) {
             usersWithUsername = userRepository.findByUsername(userRequestDto.getUsername());

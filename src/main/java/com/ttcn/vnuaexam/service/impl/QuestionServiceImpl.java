@@ -4,6 +4,7 @@ import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.request.QuestionRequestDto;
 import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
+import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.entity.Question;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -12,7 +13,10 @@ import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.QuestionService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import com.ttcn.vnuaexam.service.mapper.QuestionMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -35,9 +39,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerMapper answerMapper;
     private final AnswerRepository answerRepository;
     private final AnswerService answerService;
-    private final ChapterRepository chapterRepository;
     private final ExamQuestionRepository examQuestionRepository;
-    private final ExamRepository examRepository;
 
     @Override
     public QuestionResponseDto getById(Long id) throws EMException {
@@ -201,8 +203,10 @@ public class QuestionServiceImpl implements QuestionService {
         return SUCCESS.getMessage();
     }
 
-//    @Override
-//    public Page<QuestionResponseDto> search(QuestionSearchDto searchDto) {
-//        return List.of();
-//    }
+    @Override
+    public Page<QuestionResponseDto> search(QuestionSearchDto searchDto) {
+        Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
+        Page<Question> resultEntity = questionRepository.search(searchDto, pageRequest);
+        return resultEntity.map(questionMapper::entityToResponse);
+    }
 }
