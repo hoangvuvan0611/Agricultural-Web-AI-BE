@@ -39,6 +39,7 @@ public enum ErrorCodeEnum {
     FILE_IS_EMPTY(400_0023, "File is empty"),
     FILE_UPLOAD_FAILED(400_011, "File upload failed"),
     FILE_IS_ERROR(400_012, "File is error"),
+    NOT_FOUND_EXAMSESSION(400_021, "Not Found Exam Session"),
     ;
 
     private final int errorCode;

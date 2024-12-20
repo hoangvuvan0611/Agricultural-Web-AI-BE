@@ -12,13 +12,13 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExamSessionRequestDto {
-    private String id;
-    private String examId;
-    private String studentId;
-    private String teacherId;
+    private Long id;
+    private Long examId;
+    private Long teacherId;
+    private String code;
     private Date startTime;
     private Date endTime;
-    private Date submitTime;
+    private Date sessionDate;
     private int status;
 
 }

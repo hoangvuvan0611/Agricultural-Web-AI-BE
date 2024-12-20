@@ -1,29 +1,25 @@
 package com.ttcn.vnuaexam.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "tbl_exam_session")
-public class ExamSession {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class ExamSession extends BaseEntity {
+   @Column(name = "exam_id")
+    private Long examId;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_id", referencedColumnName = "id")
-    private Exam exam;
+    @Column(name ="teacher_id")
+    private Long teacherId;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private User student;
-
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
-    private User teacher;
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "start_time")
     private Date startTime;
@@ -31,8 +27,8 @@ public class ExamSession {
     @Column(name = "end_time")
     private Date endTime;
 
-    @Column(name = "submit_time")
-    private Date submitTime;
+    @Column(name = "session_date")
+    private Date sessionDate;
 
     @Column(name = "status")
     private int status;

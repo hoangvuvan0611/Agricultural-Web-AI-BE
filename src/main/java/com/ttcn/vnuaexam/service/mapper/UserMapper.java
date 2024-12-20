@@ -12,7 +12,7 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
 
 //    @Mapping(target = "id", ignore = true)
-//    @Mapping(source = "role", target = "role")
+    @Mapping(source = "role", target = "role")
     User requestToEntity(UserRequestDto requestDto);
 
     @Mapping(source = "role", target = "role")
