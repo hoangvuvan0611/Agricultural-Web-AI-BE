@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_URL_POST = {
              "/auth/login"
             , "/auth/introspect"
+            
     };
 
     @Value("${jwt.signer.key}")
