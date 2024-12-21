@@ -7,4 +7,9 @@ public class MessageCodes {
     public static final String NOT_WHITESPACE = "errors.not_whitespace";
 
     public static final String EXCEL_EXTENSION_ERROR_MESSAGE = "Vui lòng upload file excel có định dạng .xls hoăc .xlsx.";
+
+    public static class ImportStudent {
+        public static final String CODE_IS_BLANK = "Mã số sinh viên không được để trông";
+        public static final String CODE_DUPLICATE = "Mã số %s đã tồn tại";
+    }
 }

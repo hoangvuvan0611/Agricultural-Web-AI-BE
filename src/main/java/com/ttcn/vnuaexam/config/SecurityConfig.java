@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_URL_POST = {
              "/auth/login"
             , "/auth/introspect"
-            
+
     };
 
     @Value("${jwt.signer.key}")
@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/subject/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam-session/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/export/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/import-excel/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/class/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/subject/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/exam/**").hasAuthority("TEACHER")

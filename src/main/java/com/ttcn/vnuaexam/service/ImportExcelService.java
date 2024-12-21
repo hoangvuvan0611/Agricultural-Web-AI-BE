@@ -6,4 +6,6 @@ import java.io.IOException;
 
 public interface ImportExcelService {
     String importStudent(MultipartFile file) throws IOException;
+
+    String importQuestion(MultipartFile file) throws IOException;
 }
