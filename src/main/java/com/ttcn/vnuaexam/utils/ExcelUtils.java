@@ -14,6 +14,7 @@ public class ExcelUtils {
             return "";
         }
 
+        cell.setCellType(CellType.STRING);
         switch (cell.getCellType()) {
             case STRING:
                 return cell.getStringCellValue();

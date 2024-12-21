@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.service.impl;
 
+import com.ttcn.vnuaexam.dto.MessageDataDTO;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.entity.User;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_DUPLICATE;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 
 @Service
@@ -66,6 +68,24 @@ public class UserServiceImpl implements UserService {
             throw new EMException(USER_NAME_ALREADY_EXISTS);
         }
 
+    }
+
+    private String validateUserRequest(UserRequestDto userRequestDto, boolean isCreate) {
+//        StringBuilder message = new StringBuilder();
+        String errorMessage = "";
+        //Kiểm tra có trùng code
+        Optional<User> usersWithCode;
+        if (isCreate) {
+            usersWithCode = userRepository.findByCode(userRequestDto.getCode());
+        } else {
+            usersWithCode = userRepository.findByCodeAndIdNot(userRequestDto.getCode(), userRequestDto.getId());
+        }
+
+        if (usersWithCode.isPresent()) {
+            errorMessage = String.format(CODE_DUPLICATE, userRequestDto.getCode());
+        }
+
+        return errorMessage;
     }
 
     @Override
@@ -120,5 +140,25 @@ public class UserServiceImpl implements UserService {
     private String getCurrentUserName() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null ? authentication.getName() : null;
+    }
+
+    public String importListStudent(List<UserRequestDto> requestDtoList) {
+        StringBuilder message = new StringBuilder();
+        String errorMessage;
+        for (UserRequestDto dto : requestDtoList) {
+             errorMessage = validateUserRequest(dto, true);
+            if (StringUtils.hasText(errorMessage)) {
+                message.append(errorMessage);
+                continue;
+            }
+
+            User entity = new User();
+            entity.setCode(dto.getCode());
+            entity.setUsername(dto.getCode().toLowerCase());
+            entity.setPassword("12345");
+            entity.setFullName(dto.getFullName());
+            userRepository.save(entity);
+        }
+        return message.toString();
     }
 }

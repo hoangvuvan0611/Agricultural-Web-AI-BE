@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/class/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/subject/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/export/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/import-excel/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/class/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/subject/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/exam/**").hasAuthority("TEACHER")
