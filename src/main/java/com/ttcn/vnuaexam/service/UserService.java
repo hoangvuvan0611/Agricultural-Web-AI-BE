@@ -16,4 +16,6 @@ public interface UserService {
     boolean deleteUser(Long id) throws EMException;
 
     List<UserResponseDto> getAllUsers() throws EMException;
+
+    String importListStudent(List<UserRequestDto> requestDtoList);
 }

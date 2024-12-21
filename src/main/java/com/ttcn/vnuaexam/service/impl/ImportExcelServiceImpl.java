@@ -64,9 +64,7 @@ public class ImportExcelServiceImpl implements ImportExcelService {
             }
             if (sheet != null) {
                 List<UserRequestDto> requestDtoList = getDataFromFile(sheet);
-                for (UserRequestDto userRequestDto : requestDtoList) {
-
-                }
+                message.append(userService.importListStudent(requestDtoList));
             }
         } catch (IOException e) {
             log.error("False to importShippingStatus : ERROR: {}", e.getMessage(), e);
@@ -101,6 +99,40 @@ public class ImportExcelServiceImpl implements ImportExcelService {
         return results;
     }
 
+    @Override
+    public String importQuestion(MultipartFile file) throws IOException {
+        // tạo message
+        StringBuilder message = new StringBuilder();
+        Workbook workbook = null; // <-Interface, accepts both HSSF and XSSF.
+        Sheet sheet;
 
+        // Duyệt file
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file.getBytes())) {
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            switch (Objects.requireNonNull(extension)) {
+                case Constant.EXCEL_EXTENSION.XLSX:
+                    workbook = new XSSFWorkbook(byteArrayInputStream);
+                    sheet = workbook.getSheetAt(0);
+                    break;
+                case Constant.EXCEL_EXTENSION.XLS:
+                    workbook = new HSSFWorkbook(byteArrayInputStream);
+                    sheet = workbook.getSheetAt(0);
+                    break;
+                default:
+                    return EXCEL_EXTENSION_ERROR_MESSAGE;
+            }
+            if (sheet != null) {
+                List<UserRequestDto> requestDtoList = getDataFromFile(sheet);
+                for (UserRequestDto userRequestDto : requestDtoList) {
 
+                }
+            }
+        } catch (IOException e) {
+            log.error("False to importShippingStatus : ERROR: {}", e.getMessage(), e);
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
+        return message.toString();
+    }
 }
