@@ -38,7 +38,8 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_URL_POST).permitAll()
-                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/user/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/questions/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/class/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/subject/**").hasAuthority("ADMIN")

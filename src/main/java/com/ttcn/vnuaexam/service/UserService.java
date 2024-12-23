@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.service;
 
+import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -18,4 +19,6 @@ public interface UserService {
     List<UserResponseDto> getAllUsers() throws EMException;
 
     String importListStudent(List<UserRequestDto> requestDtoList);
+
+    UserClientDto getCurrentUser() throws EMException;
 }

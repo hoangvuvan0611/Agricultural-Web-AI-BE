@@ -1,6 +1,8 @@
 package com.ttcn.vnuaexam.service.impl;
 
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.dto.MessageDataDTO;
+import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.entity.User;
@@ -9,6 +11,7 @@ import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -90,7 +93,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto addUser(UserRequestDto userRequestDto) throws EMException {
-
         validateUser(userRequestDto, true);
         var userResponseDto = userMapper.requestToEntity(userRequestDto);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -102,6 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isCurrentUser(#id)")
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) throws EMException {
         User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
 
@@ -116,12 +119,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isCurrentUser(#id)")
     public UserResponseDto getUserById(Long id) throws EMException {
         User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
         return userMapper.entityToResponse(user);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean deleteUser(Long id) throws EMException {
         User user = userRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_USER));
         userRepository.delete(user);
@@ -140,6 +145,29 @@ public class UserServiceImpl implements UserService {
     private String getCurrentUserName() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null ? authentication.getName() : null;
+    }
+
+    @Override
+    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER', 'PROCTOR', 'STUDENT')")
+    public UserClientDto getCurrentUser() throws EMException {
+        UserClientDto infoUser = new UserClientDto();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var username = authentication != null ? authentication.getName() : null;
+        UserResponseDto userResponseDto = userRepository.findByUsername(username).map(userMapper::entityToResponse)
+                .orElseThrow(() -> new EMException(NOT_FOUND_USER));
+
+        infoUser.setUser(userResponseDto);
+        var roleUser = userResponseDto.getRole();
+        if (roleUser == Role.ADMIN) {
+            infoUser.setIsRoleAdmin(true);
+        } else if (roleUser == Role.TEACHER) {
+            infoUser.setIsRoleTeacher(true);
+        } else if (roleUser == Role.PROCTOR) {
+            infoUser.setIsRoleProctor(true);
+        } else infoUser.setIsRoleStudent(true);
+
+        return infoUser;
     }
 
     public String importListStudent(List<UserRequestDto> requestDtoList) {

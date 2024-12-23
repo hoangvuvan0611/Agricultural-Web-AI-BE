@@ -15,4 +15,7 @@
     <changeSet id="20241223_1245" author="SonDC">
         <sqlFile path="db/sql/20241223_1245_04_create_exam_set.sql"/>
     </changeSet>
+    <changeSet id="20241223_1353" author="SonDC">
+        <sqlFile path="db/sql/20241223_1353_add_table_user_subject.sql"/>
+    </changeSet>
 </databaseChangeLog>
