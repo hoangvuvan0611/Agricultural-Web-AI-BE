@@ -1,6 +1,5 @@
 package com.ttcn.vnuaexam.rest;
 
-import com.ttcn.vnuaexam.config.UserSecurity;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
@@ -9,8 +8,6 @@ import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

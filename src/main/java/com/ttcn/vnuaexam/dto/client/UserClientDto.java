@@ -1,19 +1,18 @@
 package com.ttcn.vnuaexam.dto.client;
 
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserClientDto {
-    private UserResponseDto user;
-    private Boolean isRoleAdmin = false;
-    private Boolean isRoleTeacher = false;
-    private Boolean isRoleProctor = false;
-    private Boolean isRoleStudent = false;
+    private String username;
+    private String code;
+    private String fullName;
+    private Role role;
+
 }
