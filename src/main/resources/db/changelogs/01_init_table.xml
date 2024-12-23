@@ -12,7 +12,7 @@
     <changeSet id="20241130_2211" author="SonDC">
         <sqlFile path="db/sql/20241130_2211_03_add_column_exam.sql"/>
     </changeSet>
-    <changeSet id="20241215_2031" author="SonDC">
-        <sqlFile path="db/sql/20241215_2031_04_foreign_key_off.sql"/>
+    <changeSet id="20241223_1245" author="SonDC">
+        <sqlFile path="db/sql/20241223_1245_04_create_exam_set.sql"/>
     </changeSet>
 </databaseChangeLog>

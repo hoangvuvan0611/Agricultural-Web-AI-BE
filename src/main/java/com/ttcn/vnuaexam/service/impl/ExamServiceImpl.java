@@ -19,11 +19,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.emitter.EmitterException;
 
+import java.util.Collections;
 import java.util.List;
+
+import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND;
+import static com.ttcn.vnuaexam.constant.enums.StatusExamEnum.DOING;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class ExamServiceImpl implements ExamService {
     private final QuestionService questionService;
     private final ExamRepository examRepository;
@@ -34,7 +41,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamResponseDto getById(Long id) throws EMException {
         // Lay de thi
-        var exam = examRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        var exam = examRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND));
 
         //Lay danh sach id cau hoi
         var examQuestions = examQuestionRepository.findByExamId(exam.getId());
@@ -42,6 +49,7 @@ public class ExamServiceImpl implements ExamService {
 
         //Lay cau hoi va cau tra loi theo list id(service)
         var questionsResponses = questionService.getAllByIds(questionIds);
+        Collections.shuffle(questionsResponses);
 
         // tra ra exam
         var result = examMapper.entityToResponse(exam);
@@ -57,6 +65,9 @@ public class ExamServiceImpl implements ExamService {
         //Tạo mới Exam
         var newExam = examMapper.requestToEntity(examRequestDto);
         examRepository.save(newExam);
+        if (!examRequestDto.getQuestionIds().isEmpty()) {
+            saveQuestion(newExam.getId(), examRequestDto.getQuestionIds());
+        }
         return examMapper.entityToResponse(newExam);
     }
 
@@ -65,9 +76,11 @@ public class ExamServiceImpl implements ExamService {
         //validate request
 
         // update exam
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        Exam exam = examRepository.findById(examId).orElseThrow(() -> new EMException(NOT_FOUND));
         examMapper.setValue(examRequestDto, exam);
-        examRepository.save(exam);
+        if (!examRequestDto.getQuestionIds().isEmpty()) {
+            saveQuestion(examId, examRequestDto.getQuestionIds());
+        }
         return examMapper.entityToResponse(exam);
     }
 
@@ -79,15 +92,12 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public ErrorCodeEnum saveQuestion(Long examId, List<Long> questionIds) throws EMException {
-        var exam = examRepository.findById(examId).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
-        int hadQuestion = exam.getHadQuestion();
+        var exam = examRepository.findById(examId).orElseThrow(() -> new EMException(NOT_FOUND));
         for (var questionId : questionIds) {
             if (isDuplicateQuestion(exam, questionId))
                 continue;
-            hadQuestion++;
-            examQuestionRepository.save(new ExamQuestion(examId, questionId, hadQuestion));
+            examQuestionRepository.save(new ExamQuestion(exam.getId(), questionId));
         }
-        exam.setHadQuestion(hadQuestion);
         examRepository.save(exam);
         return ErrorCodeEnum.SUCCESS;
     }
@@ -103,5 +113,13 @@ public class ExamServiceImpl implements ExamService {
         Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
         Page<ExamResultSetResponse> examResult = examRepository.search(searchDto, pageRequest);
         return examResult.map(ExamResponseDto::new);
+    }
+
+    @Override
+    public Boolean deleteById(Long id) throws EMException {
+        Exam exam = examRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND));
+        examQuestionRepository.deleteByExamId(id);
+        examRepository.deleteById(id);
+        return true;
     }
 }

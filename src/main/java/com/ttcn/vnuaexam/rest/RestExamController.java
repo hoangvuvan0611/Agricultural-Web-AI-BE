@@ -8,6 +8,7 @@ import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ExamService;
+import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +35,18 @@ public class RestExamController {
         return new EMResponse<>(examService.update(requestDto, id));
     }
 
-    @PostMapping("/question")
-    public EMResponse<String> saveQuestion(@RequestBody ExamRequestDto requestDto) throws EMException {
+    @PostMapping("/add-question/{examId}")
+    public EMResponse<String> saveQuestion(@PathVariable Long examId, @RequestBody ExamRequestDto requestDto) throws EMException {
         return new EMResponse<>(examService.saveQuestion(requestDto.getId(), requestDto.getQuestionIds()));
     }
 
     @GetMapping("/search")
     public EMResponse<Page<ExamResponseDto>> search(ExamSearchDto dto) {
         return new EMResponse<>(examService.search(dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public EMResponse<Boolean> delete(@PathVariable Long id) throws EMException {
+        return new EMResponse<>(examService.deleteById(id));
     }
 }

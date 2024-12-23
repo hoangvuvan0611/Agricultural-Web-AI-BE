@@ -21,4 +21,9 @@ public class ExamQuestion extends BaseEntity {
 
     @Column(name = "question_order")
     private Integer questionOrder;
+
+    public ExamQuestion(Long examId, Long questionId) {
+        this.examId = examId;
+        this.questionId = questionId;
+    }
 }
