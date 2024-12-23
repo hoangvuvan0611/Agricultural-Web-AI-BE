@@ -1,5 +1,7 @@
 package com.ttcn.vnuaexam.rest;
 
+import com.ttcn.vnuaexam.config.UserSecurity;
+import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -43,5 +45,10 @@ public class RestUserController {
     @GetMapping("/all")
     public EMResponse<List<UserResponseDto>> getAllUser() throws EMException {
         return new EMResponse<>(userService.getAllUsers());
+    }
+
+    @GetMapping("/current")
+    public EMResponse<UserClientDto> getCurrent() throws EMException {
+        return new EMResponse<>(userService.getCurrentUser());
     }
 }
