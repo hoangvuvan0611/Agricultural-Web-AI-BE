@@ -151,23 +151,17 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("isAuthenticated()")
 //    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER', 'PROCTOR', 'STUDENT')")
     public UserClientDto getCurrentUser() throws EMException {
-        UserClientDto infoUser = new UserClientDto();
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var username = authentication != null ? authentication.getName() : null;
         UserResponseDto userResponseDto = userRepository.findByUsername(username).map(userMapper::entityToResponse)
                 .orElseThrow(() -> new EMException(NOT_FOUND_USER));
 
-        infoUser.setUser(userResponseDto);
-        var roleUser = userResponseDto.getRole();
-        if (roleUser == Role.ADMIN) {
-            infoUser.setIsRoleAdmin(true);
-        } else if (roleUser == Role.TEACHER) {
-            infoUser.setIsRoleTeacher(true);
-        } else if (roleUser == Role.PROCTOR) {
-            infoUser.setIsRoleProctor(true);
-        } else infoUser.setIsRoleStudent(true);
-
-        return infoUser;
+        return UserClientDto.builder()
+                .username(username)
+                .fullName(userResponseDto.getFullName())
+                .code(userResponseDto.getCode())
+                .role(userResponseDto.getRole())
+                .build();
     }
 
     public String importListStudent(List<UserRequestDto> requestDtoList) {
