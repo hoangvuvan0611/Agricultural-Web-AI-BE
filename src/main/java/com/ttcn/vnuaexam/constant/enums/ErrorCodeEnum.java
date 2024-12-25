@@ -15,6 +15,7 @@ public enum ErrorCodeEnum {
     SUBJECT_ID_IS_NOT_EXIST(400_004, "Subject id is not exist"),
     SUBJECT_NAME_IS_EMPTY(400_005, "Subject name is empty"),
     SUBJECT_NAME_IS_EXIST(400_006, "Subject name is exist"),
+    SUBJECT_CODE_IS_EXIST(400_0006, "Subject code is exist"),
     NOT_FOUND_CHAPTER(400_007, "Not Found chapter"),
     NOT_FOUND_SUBJECT(400_008, "Not Found Subject"),
     QUESTION_ID_IS_NOT_EXIST(400_009, "Question id is not exist"),

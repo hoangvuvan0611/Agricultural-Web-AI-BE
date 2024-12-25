@@ -27,4 +27,6 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
             "OR chp.name LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
             "OR chp.description LIKE CONCAT('%', :#{#dto.keyword}, '%'))")
     Page<Chapter> search(@Param("dto") ChapterSearchDto dto, Pageable pageable);
+
+    List<Chapter> findBySubjectId(Long subjectId);
 }

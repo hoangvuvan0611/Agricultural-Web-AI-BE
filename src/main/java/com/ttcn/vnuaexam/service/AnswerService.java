@@ -11,4 +11,8 @@ public interface AnswerService {
     AnswerResponseDto create(AnswerRequestDto requestDto) throws EMException;
 
     Boolean deleteById(Long id) throws EMException;
+
+    List<AnswerResponseDto> getByQuestionId(Long questionId);
+
+    AnswerResponseDto update(Long id, AnswerRequestDto requestDto) throws EMException;
 }

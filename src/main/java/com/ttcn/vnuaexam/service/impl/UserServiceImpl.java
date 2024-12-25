@@ -157,6 +157,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EMException(NOT_FOUND_USER));
 
         return UserClientDto.builder()
+                .id(userResponseDto.getId())
                 .username(username)
                 .fullName(userResponseDto.getFullName())
                 .code(userResponseDto.getCode())
