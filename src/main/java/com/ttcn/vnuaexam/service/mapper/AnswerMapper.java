@@ -15,5 +15,5 @@ public interface AnswerMapper {
     AnswerResponseDto entityToResponse(Answer answer);
 
     @Mapping(target = "id", ignore = true)
-    void setValue(AnswerResponseDto responseDto, @MappingTarget Answer answer);
+    void setValue(AnswerRequestDto requestDto, @MappingTarget Answer answer);
 }

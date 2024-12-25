@@ -3,6 +3,7 @@ package com.ttcn.vnuaexam.service.impl;
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
 import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
+import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.AnswerRepository;
 import com.ttcn.vnuaexam.repository.QuestionRepository;
@@ -10,6 +11,8 @@ import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,5 +35,18 @@ public class AnswerServiceImpl implements AnswerService {
         }
         answerRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public List<AnswerResponseDto> getByQuestionId(Long questionId) {
+        List<Answer> answers = answerRepository.findByQuestionId(questionId);
+        return answers.stream().map(answerMapper::entityToResponse).toList();
+    }
+
+    @Override
+    public AnswerResponseDto update(Long id, AnswerRequestDto requestDto) throws EMException {
+        var answer = answerRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        answerMapper.setValue(requestDto, answer);
+        return answerMapper.entityToResponse(answer);
     }
 }

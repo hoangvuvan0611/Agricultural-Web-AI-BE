@@ -43,13 +43,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionResponseDto getById(Long id) throws EMException {
-        if (ObjectUtils.isEmpty(id)) {
-            throw new EMException(QUESTION_ID_IS_NOT_EXIST);
-        }
-
         var question = questionRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_QUESTION));
+        /*
         List<Answer> answers = answerRepository.findByQuestionId(question.getId());
-
         List<AnswerResponseDto> answerResponses = answers.stream()
                 .filter(Objects::nonNull)
                 .map(answerMapper::entityToResponse)
@@ -58,6 +54,9 @@ public class QuestionServiceImpl implements QuestionService {
         var result = questionMapper.entityToResponse(question);
         result.setAnswers(answerResponses);
         return result;
+
+         */
+        return questionMapper.entityToResponse(question);
     }
 
     @Override
@@ -85,19 +84,19 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(rollbackFor = {EMException.class})
     public QuestionResponseDto create(QuestionRequestDto requestDto) throws EMException {
         validateQuestion(requestDto, true);
         validateAnswer(requestDto.getAnswers());
 
         //Xử lý ảnh
+
         var question = questionMapper.requestToEntity(requestDto);
         question.setCountCorrect(countCorrect(requestDto.getAnswers()));
         questionRepository.save(question);
 
         // tạo response
         var response = questionMapper.entityToResponse(question);
-        saveAnswer(response, requestDto.getAnswers());
+        saveAnswer(question.getId(), requestDto.getAnswers());
         return response;
     }
 
@@ -150,14 +149,11 @@ public class QuestionServiceImpl implements QuestionService {
         return 1;
     }
 
-    private void saveAnswer(QuestionResponseDto question ,List<AnswerRequestDto> answers) throws EMException {
-        List<AnswerResponseDto> results = new ArrayList<>();
+    private void saveAnswer(Long questionId ,List<AnswerRequestDto> answers) throws EMException {
         for (AnswerRequestDto answer : answers) {
-            answer.setQuestionId(question.getId());
+            answer.setQuestionId(questionId);
             var answerResponse = answerService.create(answer);
-            results.add(answerResponse);
         }
-        question.setAnswers(results);
     }
 
     @Override
@@ -179,7 +175,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         // Xóa answers cũ
         answerRepository.deleteByQuestionId(question.getId());
-        saveAnswer(response, requestDto.getAnswers());
+        saveAnswer(id, requestDto.getAnswers());
         return response;
     }
 

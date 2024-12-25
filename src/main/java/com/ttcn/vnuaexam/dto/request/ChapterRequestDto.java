@@ -15,4 +15,10 @@ public class ChapterRequestDto extends BaseObjectDto {
     private Long subjectId;
     private String name;
     private String description;
+
+    public ChapterRequestDto(Long subjectId, String name, String description) {
+        this.subjectId = subjectId;
+        this.name = name;
+        this.description = description;
+    }
 }

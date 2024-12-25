@@ -18,6 +18,10 @@ import java.util.List;
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findByCode(String code);
 
+    @Query(value = " FROM Subject s WHERE s.code = :code AND s.id <> :id ")
+    List<Subject> findByCodeAndNotId(String code, Long id);
+
+
     List<Subject> findByName(String name);
 
     @Query(value = " FROM Subject s WHERE s.name = :name AND s.id <> :id ")
