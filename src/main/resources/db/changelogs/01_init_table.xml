@@ -18,4 +18,7 @@
     <changeSet id="20241223_1353" author="SonDC">
         <sqlFile path="db/sql/20241223_1353_add_table_user_subject.sql"/>
     </changeSet>
+    <changeSet id="20242612_1516" author="SonDC">
+        <sqlFile path="db/sql/20242612_1516_06_add_tbl_semester.sql"/>
+    </changeSet>
 </databaseChangeLog>

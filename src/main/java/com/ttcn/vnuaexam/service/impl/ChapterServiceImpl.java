@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 
@@ -37,6 +38,12 @@ public class ChapterServiceImpl implements ChapterService {
 
         var chapter = chapterRepository.findById(id).orElseThrow(() -> new EMException(NOT_FOUND_CHAPTER));
         return chapterMapper.entityToResponse(chapter);
+    }
+
+    @Override
+    public List<ChapterResponseDto> getBySubjectId(Long subjectId) {
+        List<Chapter> chapters = chapterRepository.findBySubjectId(subjectId);
+        return chapters.stream().map(chapterMapper::entityToResponse).collect(Collectors.toList());
     }
 
     @Override

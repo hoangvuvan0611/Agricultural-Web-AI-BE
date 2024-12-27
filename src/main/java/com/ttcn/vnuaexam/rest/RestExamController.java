@@ -2,13 +2,10 @@ package com.ttcn.vnuaexam.rest;
 
 import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
 import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
-import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
-import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ExamService;
-import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

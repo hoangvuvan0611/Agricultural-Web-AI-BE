@@ -11,9 +11,11 @@ import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.ExamQuestionRepository;
 import com.ttcn.vnuaexam.repository.ExamRepository;
 import com.ttcn.vnuaexam.repository.SubjectRepository;
+import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.ExamService;
 import com.ttcn.vnuaexam.service.QuestionService;
 import com.ttcn.vnuaexam.service.mapper.ExamMapper;
+import com.ttcn.vnuaexam.service.mapper.SubjectMapper;
 import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,7 @@ public class ExamServiceImpl implements ExamService {
     private final ExamMapper examMapper;
     private final ExamQuestionRepository examQuestionRepository;
     private final SubjectRepository subjectRepository;
+    private final AnswerService answerService;
 
     @Override
     public ExamResponseDto getById(Long id) throws EMException {
@@ -47,13 +50,13 @@ public class ExamServiceImpl implements ExamService {
         var examQuestions = examQuestionRepository.findByExamId(exam.getId());
         List<Long> questionIds = examQuestions.stream().map(ExamQuestion::getQuestionId).toList();
 
-        //Lay cau hoi va cau tra loi theo list id(service)
+        //Lay cau hoi theo list id(service)
         var questionsResponses = questionService.getAllByIds(questionIds);
-        Collections.shuffle(questionsResponses);
 
         // tra ra exam
         var result = examMapper.entityToResponse(exam);
         result.setQuestions(questionsResponses);
+
         return result;
     }
 

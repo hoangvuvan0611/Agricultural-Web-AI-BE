@@ -6,6 +6,7 @@ import com.ttcn.vnuaexam.dto.request.SubjectRequestDto;
 import com.ttcn.vnuaexam.dto.response.ChapterResponseDto;
 import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
 import com.ttcn.vnuaexam.dto.search.SearchDto;
+import com.ttcn.vnuaexam.dto.search.SubjectSearchDto;
 import com.ttcn.vnuaexam.entity.Chapter;
 import com.ttcn.vnuaexam.entity.Subject;
 import com.ttcn.vnuaexam.entity.UserSubject;
@@ -37,6 +38,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
+import static com.ttcn.vnuaexam.constant.enums.Role.ADMIN;
+import static com.ttcn.vnuaexam.constant.enums.Role.TEACHER;
 
 @AllArgsConstructor
 @Service
@@ -65,6 +68,8 @@ public class SubjectServiceImpl implements SubjectService {
         subjectResponse.setChapters(chapters);
         return subjectResponse;
     }
+
+
 
     @Override
     @Transactional
@@ -167,9 +172,13 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Page<SubjectResponseDto> searchSubject(SearchDto dto) {
+    public Page<SubjectResponseDto> searchSubject(SubjectSearchDto dto) throws EMException {
+        var userCurrent = userService.getCurrentUser();
+        if (userCurrent != null && userCurrent.getRole() == TEACHER)
+            dto.setUserId(userCurrent.getId());
+
         Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
-        Page<Subject> resultEntity = subjectRepository.search(dto.getKeyword(), pageRequest);
+        Page<Subject> resultEntity = subjectRepository.search(dto, pageRequest);
         return resultEntity.map(subject -> subjectMapper.entityToResponse(subject));
     }
 }

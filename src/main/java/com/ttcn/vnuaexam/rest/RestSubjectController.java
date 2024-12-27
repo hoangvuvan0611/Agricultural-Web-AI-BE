@@ -39,7 +39,7 @@ public class RestSubjectController {
     }
 
     @GetMapping("/search")
-    public EMResponse<Page<SubjectResponseDto>> search(SearchDto dto) {
+    public EMResponse<Page<SubjectResponseDto>> search(SubjectSearchDto dto) throws EMException {
         return new EMResponse<>(subjectService.searchSubject(dto));
     }
 }

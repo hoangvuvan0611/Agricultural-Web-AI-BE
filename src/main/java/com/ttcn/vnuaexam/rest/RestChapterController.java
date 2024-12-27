@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/chapter")
 @RequiredArgsConstructor
@@ -21,6 +23,11 @@ public class RestChapterController {
     @GetMapping("/{id}")
     public EMResponse<ChapterResponseDto> getById(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(chapterService.getById(id));
+    }
+
+    @GetMapping("/by-subject/{subjectId}")
+    public EMResponse<List<ChapterResponseDto>> getBySubjectId(@PathVariable("subjectId") Long subjectId) {
+        return new EMResponse<>(chapterService.getBySubjectId(subjectId));
     }
 
     @PostMapping()
