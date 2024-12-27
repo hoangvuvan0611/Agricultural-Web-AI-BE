@@ -14,7 +14,7 @@ public class ExamResult {
 
     @ManyToOne
     @JoinColumn(name = "session_id", referencedColumnName = "id")
-    private ExamSession examSession;
+    private ExamRoom examRoom;
 
     @Column(name = "total_score")
     private double totalScore;

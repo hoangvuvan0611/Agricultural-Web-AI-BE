@@ -35,7 +35,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     List<Question> findByChapterId(Long chapterId);
 
-    @Query(value = " FROM Question ques WHERE (:#{#dto.subjectId} is null OR ques.subjectId = :#{#dto.subjectId}) " +
+    @Query(value = " FROM Question ques " +
+            " WHERE (:#{#dto.subjectId} is null OR ques.subjectId = :#{#dto.subjectId}) " +
+            " AND (:#{#dto.chapterId} is null OR ques.chapterId = :#{#dto.chapterId}) " +
             " AND (:#{#dto.keyword} IS NULL OR :#{#dto.keyword} = ''" +
             " OR ques.content LIKE CONCAT('%', :#{#dto.keyword}, '%'))")
     Page<Question> search(@Param("dto") QuestionSearchDto dto, Pageable pageable);

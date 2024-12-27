@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tbl_user")
 @Getter
@@ -31,6 +34,15 @@ public class User extends BaseEntity {
 
     @Column(name = "full_name")
     private String fullName;
+
+    @Column(name = "dob")
+    private LocalDate dob;
+
+    @Column(name = "class_code")
+    private String classCode;
+
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "role")
     private Integer role;

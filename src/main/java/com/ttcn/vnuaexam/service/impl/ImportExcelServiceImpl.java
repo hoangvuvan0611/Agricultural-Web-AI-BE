@@ -67,7 +67,7 @@ public class ImportExcelServiceImpl implements ImportExcelService {
                 message.append(userService.importListStudent(requestDtoList));
             }
         } catch (IOException e) {
-            log.error("False to importShippingStatus : ERROR: {}", e.getMessage(), e);
+            log.error("False to file Nhap_sinh_vien : ERROR: {}", e.getMessage(), e);
         } finally {
             if (workbook != null)
                 workbook.close();
@@ -92,8 +92,11 @@ public class ImportExcelServiceImpl implements ImportExcelService {
             }
 
             cellIndex = 0;
-            requestDto.setCode(ExcelUtils.getCellValue(currentRow.getCell(cellIndex)));
-            requestDto.setFullName(ExcelUtils.getCellValue(currentRow.getCell(cellIndex)));
+            requestDto.setCode(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
+            requestDto.setFullName(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
+            requestDto.setClassCode(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
+            requestDto.setDob(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
+            requestDto.setAddress(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
             results.add(requestDto);
         }
         return results;

@@ -30,4 +30,7 @@ public class Semester extends BaseEntity {
 
     @Column(name = "finish_time")
     private LocalDate finishDate;
+
+    @Column(name = "status")
+    private int status;
 }

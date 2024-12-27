@@ -21,4 +21,10 @@
     <changeSet id="20242612_1516" author="SonDC">
         <sqlFile path="db/sql/20242612_1516_06_add_tbl_semester.sql"/>
     </changeSet>
+    <changeSet id="20241227_0846" author="SonDC">
+        <sqlFile path="db/sql/20241227_0846_07_add_clm_semester.sql"/>
+    </changeSet>
+    <changeSet id="20241227_0935" author="SonDC">
+        <sqlFile path="db/sql/20241227_0935_08_add_clm_tbl_user.sql"/>
+    </changeSet>
 </databaseChangeLog>
