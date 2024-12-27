@@ -23,10 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
@@ -59,6 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
         return questionMapper.entityToResponse(question);
     }
 
+    // Dùng cho exam
     @Override
     public List<QuestionResponseDto> getAllByIds(List<Long> ids) throws EMException {
         if (CollectionUtils.isEmpty(ids)) {
@@ -75,6 +73,7 @@ public class QuestionServiceImpl implements QuestionService {
                     .filter(Objects::nonNull)
                     .map(answerMapper::entityToResponse)
                     .collect(Collectors.toList());
+            Collections.shuffle(answerResponses);
 
             var questionResponseDto = questionMapper.entityToResponse(question);
             questionResponseDto.setAnswers(answerResponses);
@@ -157,7 +156,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional(rollbackFor = {EMException.class})
+    @Transactional
     public QuestionResponseDto update(Long id, QuestionRequestDto requestDto) throws EMException {
         // Tìm question
         var question = questionRepository.findById(id)

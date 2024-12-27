@@ -27,10 +27,13 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = " FROM Subject s WHERE s.name = :name AND s.id <> :id ")
     List<Subject> findByNameAndNotId(String name, Long id);
 
-    @Query(value = "FROM Subject sbj WHERE (:text is null or :text = '' " +
-            " or sbj.code LIKE CONCAT('%', :text, '%') " +
-            " or sbj.name LIKE CONCAT('%', :text, '%') " +
-            " or sbj.description LIKE CONCAT('%', :text, '%'))")
-    Page<Subject> search(@Param("text") String text, Pageable pageable);
-
+    @Query(value = "FROM Subject sbj " +
+            " LEFT JOIN UserSubject usbj " +
+            " ON sbj.id = usbj.subjectId " +
+            " WHERE (:#{#dto.userId} is null or usbj.userId = :#{#dto.userId}) " +
+            " and (:#{#dto.keyword} is null or :#{#dto.keyword} = '' " +
+            " or sbj.code LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
+            " or sbj.name LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
+            " or sbj.description LIKE CONCAT('%', :#{#dto.keyword}, '%'))")
+    Page<Subject> search(@Param("dto") SubjectSearchDto dto, Pageable pageable);
 }

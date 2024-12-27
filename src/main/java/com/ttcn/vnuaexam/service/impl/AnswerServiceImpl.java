@@ -12,7 +12,10 @@ import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -39,8 +42,11 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<AnswerResponseDto> getByQuestionId(Long questionId) {
+        List<AnswerResponseDto> answersResponse = new ArrayList<>();
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
-        return answers.stream().map(answerMapper::entityToResponse).toList();
+        answersResponse = answers.stream().map(answerMapper::entityToResponse).toList();
+        Collections.shuffle(answersResponse);
+        return answersResponse;
     }
 
     @Override

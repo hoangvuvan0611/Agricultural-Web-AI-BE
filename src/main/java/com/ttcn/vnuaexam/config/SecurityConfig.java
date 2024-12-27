@@ -41,11 +41,10 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_URL_POST).permitAll()
-//                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/api/user/**").hasAuthority("TEACHER")
-                        .requestMatchers("/api/questions/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/class/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/api/subject/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/user/**").hasAnyAuthority("ADMIN", "TEACHER")
+                        .requestMatchers("/api/questions/**").hasAnyAuthority("ADMIN", "TEACHER")
+                        .requestMatchers("/api/answers/**").hasAnyAuthority("ADMIN", "TEACHER")
+                        .requestMatchers("/api/semesters/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam-session/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/export/**").hasAuthority("ADMIN")

@@ -6,16 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerResponseDto extends BaseObjectDto {
+public class SemesterResponseDto extends BaseObjectDto {
     private Long id;
-    private Long questionId;
-    private Integer orderNumber;
-    private String content;
-    private String image;
+    private String code;
+    private String title;
+    private LocalDate startDate;
+    private LocalDate finishDate;
 }
