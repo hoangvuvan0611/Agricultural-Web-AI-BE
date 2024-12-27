@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExamSessionRequestDto {
+public class ExamRoomRequestDto {
     private Long id;
     private Long examId;
     private Long teacherId;

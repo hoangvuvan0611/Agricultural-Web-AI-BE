@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tbl_exam_session")
-public class ExamSession extends BaseEntity {
+public class ExamRoom extends BaseEntity {
    @Column(name = "exam_id")
     private Long examId;
 
@@ -22,16 +23,14 @@ public class ExamSession extends BaseEntity {
     private String code;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "session_date")
-    private Date sessionDate;
+    private LocalDateTime sessionDate;
 
     @Column(name = "status")
     private int status;
-
-
 }
