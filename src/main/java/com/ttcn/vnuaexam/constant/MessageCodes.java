@@ -10,6 +10,6 @@ public class MessageCodes {
 
     public static class ImportStudent {
         public static final String CODE_IS_BLANK = "Mã số sinh viên không được để trông";
-        public static final String CODE_DUPLICATE = "Mã số %s đã tồn tại";
+        public static final String CODE_STUDENT_DUPLICATE = "Mã sinh viên %s đã tồn tại";
     }
 }

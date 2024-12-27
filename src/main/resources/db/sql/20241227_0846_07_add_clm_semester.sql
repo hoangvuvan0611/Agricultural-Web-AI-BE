@@ -1,2 +1,2 @@
-ALTER TABLE tbl_exam
-    ADD COLUMN had_question INT;
+ALTER TABLE tbl_semester
+    ADD COLUMN status INT;

@@ -15,7 +15,7 @@ public class StudentAnswers {
 
     @ManyToOne
     @JoinColumn(name = "session_id",referencedColumnName = "id")
-    private ExamSession examSession;
+    private ExamRoom examRoom;
 
     @ManyToOne
     @JoinColumn(name = "question_id",referencedColumnName = "id")

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ExamSessionServiceImpl implements ExamRoomService {
+public class ExamRoomServiceImpl implements ExamRoomService {
 
     private final ExamRoomMapper examSessionMapper;
     private final ExamRoomRepository examRoomRepository;

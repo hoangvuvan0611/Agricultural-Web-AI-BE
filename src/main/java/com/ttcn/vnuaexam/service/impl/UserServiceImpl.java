@@ -5,12 +5,18 @@ import com.ttcn.vnuaexam.dto.MessageDataDTO;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
+import com.ttcn.vnuaexam.dto.search.UserSearchDto;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.UserMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.mapstruct.control.MappingControl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_DUPLICATE;
+import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_STUDENT_DUPLICATE;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
+import static com.ttcn.vnuaexam.constant.enums.Role.STUDENT;
 
 @Service
 @AllArgsConstructor
@@ -45,7 +52,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> usersWithCode;
         if (isCreate) {
             usersWithCode = userRepository.findByCode(userRequestDto.getCode());
-
         } else {
             usersWithCode = userRepository.findByCodeAndIdNot(userRequestDto.getCode(), userRequestDto.getId());
         }
@@ -85,7 +91,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (usersWithCode.isPresent()) {
-            errorMessage = String.format(CODE_DUPLICATE, userRequestDto.getCode());
+            errorMessage = String.format(CODE_STUDENT_DUPLICATE, userRequestDto.getCode());
         }
 
         return errorMessage;
@@ -94,13 +100,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto addUser(UserRequestDto userRequestDto) throws EMException {
         validateUser(userRequestDto, true);
-        var userResponseDto = userMapper.requestToEntity(userRequestDto);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        userResponseDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        var user = userMapper.requestToEntity(userRequestDto);
+        if (userRequestDto.getPassword() != null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        }
         String addedBy = getCurrentUserName();
-        userResponseDto.setCreatedBy(addedBy);
-        userRepository.save(userResponseDto);
-        return userMapper.entityToResponse(userResponseDto);
+        user.setCreatedBy(addedBy);
+        userRepository.save(user);
+        return userMapper.entityToResponse(user);
     }
 
     @Override
@@ -110,8 +118,10 @@ public class UserServiceImpl implements UserService {
 
         validateUser(userRequestDto, false);
         userMapper.setValue(userRequestDto, user);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        if (userRequestDto.getPassword() != null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        }
         String updatedBy = getCurrentUserName();
         user.setModifiedBy(updatedBy);
         userRepository.save(user);
@@ -175,13 +185,18 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
 
-            User entity = new User();
-            entity.setCode(dto.getCode());
-            entity.setUsername(dto.getCode().toLowerCase());
-            entity.setPassword("12345");
-            entity.setFullName(dto.getFullName());
-            userRepository.save(entity);
+            dto.setUsername(dto.getCode());
+            dto.setRole(STUDENT.getNumRole());
+            var userEntity = userMapper.requestToEntity(dto);
+            userRepository.save(userEntity);
         }
         return message.toString();
+    }
+
+    @Override
+    public Page<UserResponseDto> search(UserSearchDto searchDto) {
+        Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
+        Page<User> usersEntity = userRepository.search(searchDto, pageRequest);
+        return usersEntity.map(userMapper::entityToResponse);
     }
 }

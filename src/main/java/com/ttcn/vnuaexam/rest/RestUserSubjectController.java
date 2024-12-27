@@ -1,18 +1,12 @@
 package com.ttcn.vnuaexam.rest;
 
-import com.ttcn.vnuaexam.dto.request.ExamSessionRequestDto;
 import com.ttcn.vnuaexam.dto.request.UserSubjectRequestDto;
-import com.ttcn.vnuaexam.dto.response.ExamSessionResponseDto;
 import com.ttcn.vnuaexam.dto.response.UserSubjectResponseDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
-import com.ttcn.vnuaexam.service.ExamSessionService;
 import com.ttcn.vnuaexam.service.UserSubjectService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/user-subject")

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/exam-room")
+@RequestMapping("/exam-rooms")
 @RequiredArgsConstructor
-public class RestExamSessionController {
+public class RestExamRoomController {
     private final ExamRoomService examRoomService;
 
     @GetMapping("/")

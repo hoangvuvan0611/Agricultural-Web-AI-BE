@@ -1,21 +1,19 @@
 package com.ttcn.vnuaexam.service.mapper;
 
-import com.ttcn.vnuaexam.dto.request.ExamSessionRequestDto;
-import com.ttcn.vnuaexam.dto.response.ExamSessionResponseDto;
-import com.ttcn.vnuaexam.entity.ExamSession;
+import com.ttcn.vnuaexam.dto.request.ExamRoomRequestDto;
+import com.ttcn.vnuaexam.dto.response.ExamRoomResponseDto;
+import com.ttcn.vnuaexam.entity.ExamRoom;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.UUID;
-
 @Mapper(componentModel = "spring")
-public interface ExamSessionMapper {
+public interface ExamRoomMapper {
     @Mapping(target = "id", ignore = true)
-    ExamSession requestDtoToEntity(ExamSessionRequestDto examSessionRequestDto);
+    ExamRoom requestDtoToEntity(ExamRoomRequestDto examRoomRequestDto);
 
-    ExamSessionResponseDto entityToResponseDto(ExamSession examSession);
+    ExamRoomResponseDto entityToResponseDto(ExamRoom examRoom);
 
     @Mapping(target = "id", ignore = true)
-    void setValue(ExamSessionRequestDto examSessionRequestDto, @MappingTarget ExamSession examSession);
+    void setValue(ExamRoomRequestDto examRoomRequestDto, @MappingTarget ExamRoom examRoom);
 }

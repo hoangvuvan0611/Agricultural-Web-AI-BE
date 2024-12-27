@@ -19,6 +19,7 @@ public class SemesterRequestDto extends BaseObjectDto {
     private String title;
     private String startDate;
     private String finishDate;
+    private int status = 0;
 
     public LocalDate getStartDate() {
         if (startDate != null)

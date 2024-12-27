@@ -9,7 +9,4 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class ExamQuestionServiceImpl implements ExamQuestionService {
-    private final ExamQuestionMapper examQuestionMapper;
-    private final ExamQuestionRepository examQuestionRepository;
-
 }

@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChapterSearchDto extends SearchDto{
+public class UserSearchDto extends SearchDto{
     private Long subjectId;
-    private String name;
-    private String description;
+    private Long examRoomId;
 }
