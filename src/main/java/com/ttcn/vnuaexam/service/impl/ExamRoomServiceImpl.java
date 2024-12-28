@@ -7,6 +7,7 @@ import com.ttcn.vnuaexam.entity.ExamRoom;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.repository.ExamRoomRepository;
 import com.ttcn.vnuaexam.service.ExamRoomService;
+import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.ExamRoomMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,16 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ExamRoomServiceImpl implements ExamRoomService {
-
+    private  final UserService userService;
     private final ExamRoomMapper examSessionMapper;
     private final ExamRoomRepository examRoomRepository;
 
     @Override
-    public ExamRoomResponseDto add(ExamRoomRequestDto ExamRoomRequestDto) {
-        var examSession = examSessionMapper.requestDtoToEntity(ExamRoomRequestDto);
+    public ExamRoomResponseDto add(ExamRoomRequestDto requestDto) throws EMException {
+        var currentUser = userService.getCurrentUser();
+        requestDto.setTeacherId(currentUser.getId());
+        requestDto.setStatus(0);
+        var examSession = examSessionMapper.requestDtoToEntity(requestDto);
         examRoomRepository.save(examSession);
         return examSessionMapper.entityToResponseDto(examSession);
     }

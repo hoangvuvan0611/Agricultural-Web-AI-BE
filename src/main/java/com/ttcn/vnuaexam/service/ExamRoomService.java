@@ -7,7 +7,7 @@ import com.ttcn.vnuaexam.exception.EMException;
 import java.util.List;
 
 public interface ExamRoomService {
-    ExamRoomResponseDto add(ExamRoomRequestDto examRoomRequestDto);
+    ExamRoomResponseDto add(ExamRoomRequestDto examRoomRequestDto) throws EMException;
 
     ExamRoomResponseDto update(Long id, ExamRoomRequestDto examRoomRequestDto) throws EMException;
 

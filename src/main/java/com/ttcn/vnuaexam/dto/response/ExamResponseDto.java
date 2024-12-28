@@ -18,6 +18,7 @@ import java.util.List;
 public class ExamResponseDto extends BaseObjectDto {
     private Long id;
     private Long subjectId;
+    private Long examSetId;
     private String code;
     private String title;
     private String description;

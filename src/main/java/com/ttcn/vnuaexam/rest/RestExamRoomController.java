@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/exam-rooms")
+@RequestMapping("/api/exam-rooms")
 @RequiredArgsConstructor
 public class RestExamRoomController {
     private final ExamRoomService examRoomService;
 
-    @GetMapping("/")
-    public EMResponse<List<ExamRoomResponseDto>> getExamSession() {
+    @GetMapping()
+    public EMResponse<List<ExamRoomResponseDto>> getAll() {
         return new EMResponse<>(examRoomService.findAll());
     }
 
     @PostMapping("/add")
-    public EMResponse<ExamRoomResponseDto> addExamSession(@RequestBody ExamRoomRequestDto requestDto) {
+    public EMResponse<ExamRoomResponseDto> create(@RequestBody ExamRoomRequestDto requestDto) throws EMException {
         return new EMResponse<>(examRoomService.add(requestDto));
     }
 
     @PutMapping("/{id}")
-    public EMResponse<ExamRoomResponseDto> updateExamSession(@PathVariable Long id, @RequestBody ExamRoomRequestDto requestDto) throws EMException {
+    public EMResponse<ExamRoomResponseDto> update(@PathVariable Long id, @RequestBody ExamRoomRequestDto requestDto) throws EMException {
         return new EMResponse<>(examRoomService.update(id, requestDto));
     }
 
     @DeleteMapping("/{id}")
-    public EMResponse<Boolean> deleteExamSession(@PathVariable Long id) throws EMException {
+    public EMResponse<Boolean> delete(@PathVariable Long id) throws EMException {
         return new EMResponse<>(examRoomService.delete(id));
     }
 
     @GetMapping("/{id}")
-    public EMResponse<ExamRoomResponseDto> getExamSession(@PathVariable Long id) throws EMException {
+    public EMResponse<ExamRoomResponseDto> getById(@PathVariable Long id) throws EMException {
         return new EMResponse<>(examRoomService.findById(id));
     }
 }
