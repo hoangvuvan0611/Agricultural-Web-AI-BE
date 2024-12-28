@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/answers/**").hasAnyAuthority("ADMIN", "TEACHER")
                         .requestMatchers("/api/semesters/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/exam/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/exam-session/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/exam-rooms/**").hasAnyAuthority("ADMIN", "TEACHER")
                         .requestMatchers("/api/export/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/import-excel/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/class/**").hasAuthority("TEACHER")
@@ -58,6 +58,8 @@ public class SecurityConfig {
 
         httpSecurity.oauth2ResourceServer(oauth2
                 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
+
+        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
@@ -100,5 +102,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
