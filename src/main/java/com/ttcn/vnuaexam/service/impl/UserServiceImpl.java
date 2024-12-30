@@ -80,7 +80,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String validateUserRequest(UserRequestDto userRequestDto, boolean isCreate) {
-//        StringBuilder message = new StringBuilder();
         String errorMessage = "";
         //Kiểm tra có trùng code
         Optional<User> usersWithCode;
@@ -179,7 +178,7 @@ public class UserServiceImpl implements UserService {
         StringBuilder message = new StringBuilder();
         String errorMessage;
         for (UserRequestDto dto : requestDtoList) {
-             errorMessage = validateUserRequest(dto, true);
+            errorMessage = validateUserRequest(dto, true);
             if (StringUtils.hasText(errorMessage)) {
                 message.append(errorMessage);
                 continue;

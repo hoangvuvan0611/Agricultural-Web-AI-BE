@@ -1,19 +1,11 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.Constant;
-import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
-import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
-import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
-import com.ttcn.vnuaexam.exception.EMException;
-import com.ttcn.vnuaexam.repository.AnswerRepository;
-import com.ttcn.vnuaexam.repository.QuestionRepository;
-import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.ImportExcelService;
+import com.ttcn.vnuaexam.service.RoomStudentService;
 import com.ttcn.vnuaexam.service.UserService;
-import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import com.ttcn.vnuaexam.utils.ExcelUtils;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -22,7 +14,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +30,7 @@ import static com.ttcn.vnuaexam.constant.MessageCodes.EXCEL_EXTENSION_ERROR_MESS
 @Slf4j
 public class ImportExcelServiceImpl implements ImportExcelService {
     private final UserService userService;
+    private final RoomStudentService roomStudentService;
 
     @Override
     public String importStudent(MultipartFile file) throws IOException {
@@ -96,10 +88,63 @@ public class ImportExcelServiceImpl implements ImportExcelService {
             requestDto.setFullName(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
             requestDto.setClassCode(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
             requestDto.setDob(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
-            requestDto.setAddress(ExcelUtils.getCellValue(currentRow.getCell(cellIndex++)));
+            requestDto.setAddress(ExcelUtils.getCellValue(currentRow.getCell(cellIndex)));
             results.add(requestDto);
         }
         return results;
+    }
+
+    @Override
+    public String addStudentToRoom(MultipartFile file, Long roomId) throws IOException {
+        StringBuilder message = new StringBuilder();
+        Workbook workbook = null;
+        Sheet sheet;
+
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file.getBytes())) {
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            switch (Objects.requireNonNull(extension)) {
+                case Constant.EXCEL_EXTENSION.XLSX:
+                    workbook = new XSSFWorkbook(byteArrayInputStream);
+                    sheet = workbook.getSheetAt(0);
+                    break;
+                case Constant.EXCEL_EXTENSION.XLS:
+                    workbook = new HSSFWorkbook(byteArrayInputStream);
+                    sheet = workbook.getSheetAt(0);
+                    break;
+                default:
+                    return EXCEL_EXTENSION_ERROR_MESSAGE;
+            }
+
+            if (sheet != null) {
+                var studentCode = getStudentCodeFromFile(sheet);
+                message.append(roomStudentService.addStudentToRoom(studentCode, roomId));
+            }
+        } catch (IOException e) {
+            log.error("False to file Nhap_sinh_vien : ERROR: {}", e.getMessage(), e);
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
+        return message.toString();
+    }
+
+    private List<String> getStudentCodeFromFile(Sheet sheet) {
+        List<String> listCode = new ArrayList<>();
+
+        int cellIndex;
+        for (Row currentRow : sheet) {
+            int rowNum = currentRow.getRowNum();
+            if (rowNum == 0) {
+                continue;
+            }
+            if (ExcelUtils.isRowEmpty(currentRow)) {
+                continue;
+            }
+
+            cellIndex = 0;
+            listCode.add(ExcelUtils.getCellValue(currentRow.getCell(cellIndex)));
+        }
+        return listCode;
     }
 
     @Override

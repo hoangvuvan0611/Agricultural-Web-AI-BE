@@ -1,9 +1,6 @@
 package com.ttcn.vnuaexam.rest;
 
-import com.ttcn.vnuaexam.dto.response.FileDescriptionResponseDto;
-import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
-import com.ttcn.vnuaexam.service.FileDescriptionService;
 import com.ttcn.vnuaexam.service.ImportExcelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,5 +20,11 @@ public class RestImportExcelController {
     @PostMapping("/students")
     public EMResponse<String> importStudent(@RequestParam("file") MultipartFile file) throws IOException {
         return new EMResponse<>(importExcelService.importStudent(file));
+    }
+
+    @PostMapping("/students-to-room")
+    public EMResponse<String> importStudentsToRoom(@RequestParam("file") MultipartFile file,
+                                                   @RequestParam("roomId") Long roomId) throws IOException {
+        return new EMResponse<>(importExcelService.addStudentToRoom(file, roomId));
     }
 }

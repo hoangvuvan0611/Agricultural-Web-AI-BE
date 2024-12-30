@@ -8,6 +8,8 @@ import com.ttcn.vnuaexam.service.ExamSetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/exam-sets")
 @RequiredArgsConstructor
@@ -17,6 +19,11 @@ public class RestExamSetController {
     @GetMapping("/{id}")
     public EMResponse<ExamSetResponseDto> getById(@PathVariable Long id) throws EMException {
         return new EMResponse<>(examSetService.getById(id));
+    }
+
+    @GetMapping("get-all")
+    public EMResponse<List<ExamSetResponseDto>> getAll() {
+        return new EMResponse<>(examSetService.getAll());
     }
 
     @PostMapping()

@@ -1,19 +1,24 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import com.ttcn.vnuaexam.constant.enums.TypeAnswerEnum;
 import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
 import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
+import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
+import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
 import com.ttcn.vnuaexam.entity.Exam;
 import com.ttcn.vnuaexam.entity.ExamQuestion;
 import com.ttcn.vnuaexam.exception.EMException;
+import com.ttcn.vnuaexam.repository.AnswerRepository;
 import com.ttcn.vnuaexam.repository.ExamQuestionRepository;
 import com.ttcn.vnuaexam.repository.ExamRepository;
 import com.ttcn.vnuaexam.repository.SubjectRepository;
 import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.ExamService;
 import com.ttcn.vnuaexam.service.QuestionService;
+import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import com.ttcn.vnuaexam.service.mapper.ExamMapper;
 import com.ttcn.vnuaexam.service.mapper.SubjectMapper;
 import com.ttcn.vnuaexam.utils.PageUtils;
@@ -24,8 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.emitter.EmitterException;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND;
 import static com.ttcn.vnuaexam.constant.enums.StatusExamEnum.DOING;
@@ -40,6 +45,8 @@ public class ExamServiceImpl implements ExamService {
     private final ExamQuestionRepository examQuestionRepository;
     private final SubjectRepository subjectRepository;
     private final AnswerService answerService;
+    private final AnswerRepository answerRepository;
+    private final AnswerMapper answerMapper;
 
     @Override
     public ExamResponseDto getById(Long id) throws EMException {
@@ -53,12 +60,36 @@ public class ExamServiceImpl implements ExamService {
         //Lay cau hoi theo list id(service)
         var questionsResponses = questionService.getAllByIds(questionIds);
 
+        // Lay dap an
+        if (!questionsResponses.isEmpty()) {
+            for (QuestionResponseDto question : questionsResponses) {
+                var answersEntity = answerRepository.findByQuestionId(question.getId());
+                var answersResponse = answersEntity.stream().map(answerMapper::entityToResponse).collect(Collectors.toList());
+
+                // de cau allAnswer ở cuối
+                AnswerResponseDto lastAnswer = answersResponse.stream().filter(a -> a.getType() != null && a.getType()
+                        .equals(TypeAnswerEnum.LAST_ANSWER.getCode())).findFirst().orElse(null);
+
+                if (lastAnswer != null) {
+                    answersResponse.remove(lastAnswer);
+                    Collections.shuffle(answersResponse);
+                    answersResponse.add(lastAnswer);
+                } else {
+                    Collections.shuffle(answersResponse);
+                }
+
+                question.setAnswers(answersResponse);
+            }
+        }
+
         // tra ra exam
         var result = examMapper.entityToResponse(exam);
+        Collections.shuffle(questionsResponses);
         result.setQuestions(questionsResponses);
 
         return result;
     }
+
 
     @Override
     public ExamResponseDto create(ExamRequestDto examRequestDto) throws EMException {
