@@ -62,9 +62,4 @@ public class ExamRoomServiceImpl implements ExamRoomService {
                 .map(examSessionMapper::entityToResponseDto)
                 .collect(Collectors.toList());
     }
-
-
-
-
-
 }

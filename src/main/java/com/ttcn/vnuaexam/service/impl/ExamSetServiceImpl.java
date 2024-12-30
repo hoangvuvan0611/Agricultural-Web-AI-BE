@@ -11,6 +11,8 @@ import com.ttcn.vnuaexam.service.mapper.ExamSetMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class ExamSetServiceImpl implements ExamSetService {
@@ -38,5 +40,9 @@ public class ExamSetServiceImpl implements ExamSetService {
         return examSetMapper.entityToResponse(examSetRepository.save(entity));
     }
 
-
+    @Override
+    public List<ExamSetResponseDto> getAll() {
+        var examSetEntityList = examSetRepository.findAll();
+        return examSetEntityList.stream().map(examSetMapper::entityToResponse).toList();
+    }
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.net.Inet4Address;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -16,4 +18,5 @@ public class AnswerRequestDto {
     private String content;
     private String image;
     private Boolean isCorrect;
+    private Integer type;
 }

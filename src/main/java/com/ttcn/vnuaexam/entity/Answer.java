@@ -27,4 +27,7 @@ public class Answer extends BaseEntity {
 
     @Column(name = "is_correct")
     private Boolean isCorrect;
+
+    @Column(name = "type")
+    private Integer type;
 }

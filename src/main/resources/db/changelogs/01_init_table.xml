@@ -27,4 +27,10 @@
     <changeSet id="20241227_0935" author="SonDC">
         <sqlFile path="db/sql/20241227_0935_08_add_clm_tbl_user.sql"/>
     </changeSet>
+    <changeSet id="20241228_0856" author="SonDC">
+        <sqlFile path="db/sql/20241228_0856_09_add_column_tbl_answer.sql"/>
+    </changeSet>
+    <changeSet id="20241231_1204" author="SonDC">
+        <sqlFile path="db/sql/20241231_1204_10_add_column_room_student.sql"/>
+    </changeSet>
 </databaseChangeLog>

@@ -21,7 +21,7 @@ public class RestExamRoomController {
         return new EMResponse<>(examRoomService.findAll());
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public EMResponse<ExamRoomResponseDto> create(@RequestBody ExamRoomRequestDto requestDto) throws EMException {
         return new EMResponse<>(examRoomService.add(requestDto));
     }
