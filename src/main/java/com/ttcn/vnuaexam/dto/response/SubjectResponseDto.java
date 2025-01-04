@@ -18,5 +18,19 @@ public class SubjectResponseDto extends BaseObjectDto {
     private String code;
     private String name;
     private String description;
+    private Integer numberOfChapters;
+    private Integer numberOfQuestions;
+    private Integer numberOfExams;
     private List<ChapterResponseDto> chapters;
+
+    public SubjectResponseDto(Long id, String code, String name, String description, Long numberOfChapters,
+                              Long numberOfQuestions, Long numberOfExams) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.description = description;
+        this.numberOfChapters = numberOfChapters.intValue();
+        this.numberOfQuestions = numberOfQuestions.intValue();
+        this.numberOfExams = numberOfExams.intValue();
+    }
 }

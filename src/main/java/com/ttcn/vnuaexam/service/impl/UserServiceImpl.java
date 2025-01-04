@@ -5,6 +5,7 @@ import com.ttcn.vnuaexam.dto.MessageDataDTO;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.dto.search.UserSearchDto;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -193,9 +194,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponseDto> search(UserSearchDto searchDto) {
-        Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
-        Page<User> usersEntity = userRepository.search(searchDto, pageRequest);
+    public Page<UserResponseDto> search(SearchDto dto) {
+        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        Page<User> usersEntity = userRepository.search(dto, pageRequest);
         return usersEntity.map(userMapper::entityToResponse);
     }
 }

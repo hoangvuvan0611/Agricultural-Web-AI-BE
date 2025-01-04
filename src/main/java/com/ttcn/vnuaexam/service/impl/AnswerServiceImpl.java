@@ -41,11 +41,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<AnswerResponseDto> getByQuestionId(Long questionId) {
-        List<AnswerResponseDto> answersResponse = new ArrayList<>();
+    public List<AnswerResponseDto> getByQuestionId(Long questionId) throws EMException {
+        if (!questionRepository.existsById(questionId))
+            throw new EMException(ErrorCodeEnum.NOT_FOUND);
+        List<AnswerResponseDto> answersResponse;
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         answersResponse = answers.stream().map(answerMapper::entityToResponse).toList();
-        Collections.shuffle(answersResponse);
         return answersResponse;
     }
 

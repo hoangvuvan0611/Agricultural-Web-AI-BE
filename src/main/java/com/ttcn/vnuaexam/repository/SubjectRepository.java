@@ -1,10 +1,8 @@
 package com.ttcn.vnuaexam.repository;
 
-import com.ttcn.vnuaexam.corollary.SubjectResultSetResponse;
 import com.ttcn.vnuaexam.dto.response.SubjectResponseDto;
 import com.ttcn.vnuaexam.dto.search.SubjectSearchDto;
 import com.ttcn.vnuaexam.entity.Subject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +25,11 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = " FROM Subject s WHERE s.name = :name AND s.id <> :id ")
     List<Subject> findByNameAndNotId(String name, Long id);
 
-    @Query(value = "FROM Subject sbj " +
+    @Query(value = " SELECT new com.ttcn.vnuaexam.dto.response.SubjectResponseDto(sbj.id, sbj.code, sbj.name, sbj.description, " +
+            " (SELECT COUNT(c.id) FROM Chapter c WHERE c.subjectId = sbj.id)," +
+            " (SELECT COUNT(q.id) FROM Question q WHERE q.subjectId = sbj.id)," +
+            " (SELECT COUNT(e.id) FROM Exam e WHERE e.subjectId = sbj.id)) " +
+            " FROM Subject sbj " +
             " LEFT JOIN UserSubject usbj " +
             " ON sbj.id = usbj.subjectId " +
             " WHERE (:#{#dto.userId} is null or usbj.userId = :#{#dto.userId}) " +
@@ -35,5 +37,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
             " or sbj.code LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
             " or sbj.name LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
             " or sbj.description LIKE CONCAT('%', :#{#dto.keyword}, '%'))")
-    Page<Subject> search(@Param("dto") SubjectSearchDto dto, Pageable pageable);
+    Page<SubjectResponseDto> search(@Param("dto") SubjectSearchDto dto, Pageable pageable);
 }

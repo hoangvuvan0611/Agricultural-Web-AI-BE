@@ -17,7 +17,7 @@ public class RestAnswerController {
     private final AnswerService answerService;
 
     @GetMapping("by-question/{questionId}")
-    public EMResponse<List<AnswerResponseDto>> getByQuestionId(@PathVariable("questionId") Long questionId) {
+    public EMResponse<List<AnswerResponseDto>> getByQuestionId(@PathVariable("questionId") Long questionId) throws EMException {
         return new EMResponse<>(answerService.getByQuestionId(questionId));
     }
 

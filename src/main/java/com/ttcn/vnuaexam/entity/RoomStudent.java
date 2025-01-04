@@ -3,8 +3,7 @@ package com.ttcn.vnuaexam.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "tbl_exam_session_student")
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomStudent extends BaseEntity {
     @Column(name = "exam_session_id")
     private Long examRoomId;

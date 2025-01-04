@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamResponseDto extends BaseObjectDto {
+public class ExamResponseDto extends BaseObjectDto implements Serializable {
     private Long id;
     private Long subjectId;
     private Long examSetId;

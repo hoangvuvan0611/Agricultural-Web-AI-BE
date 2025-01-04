@@ -12,7 +12,7 @@ public interface AnswerService {
 
     Boolean deleteById(Long id) throws EMException;
 
-    List<AnswerResponseDto> getByQuestionId(Long questionId);
+    List<AnswerResponseDto> getByQuestionId(Long questionId) throws EMException;
 
     AnswerResponseDto update(Long id, AnswerRequestDto requestDto) throws EMException;
 }

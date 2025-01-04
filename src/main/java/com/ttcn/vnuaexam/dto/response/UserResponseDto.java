@@ -10,11 +10,9 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserResponseDto extends BaseEntity {
     private Long id;
     private String username;
-    private String password;
     private String code;
     private String fullName;
     private LocalDate dob;
