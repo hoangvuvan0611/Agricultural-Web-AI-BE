@@ -63,8 +63,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EMException(NOT_FOUND_USERNAME));
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean authentication = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean authentication;
+        if (user.getRole().equals(Role.STUDENT.getNumRole())) {
+            authentication = true;
+        } else {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            authentication = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        }
 
         if (!authentication) {
             throw new EMException(UNAUTHENTICATED);

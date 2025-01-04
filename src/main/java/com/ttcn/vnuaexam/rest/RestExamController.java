@@ -6,6 +6,8 @@ import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ExamService;
+import com.ttcn.vnuaexam.service.UserService;
+import com.ttcn.vnuaexam.service.mapper.ExamMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RestExamController {
     private final ExamService examService;
+    private final UserService userService;
 
     @GetMapping("/{id}")
     public EMResponse<ExamResponseDto> getById(@PathVariable Long id) throws EMException {
         return new EMResponse<>(examService.getById(id));
+    }
+
+    @GetMapping("/exam-student/{examId}")
+    public EMResponse<ExamResponseDto> getExamForStudent(@PathVariable Long examId) throws EMException {
+        var studentId = userService.getCurrentUser().getId();
+        return new EMResponse<>(examService.getExamForStudent(examId, studentId));
     }
 
     @PostMapping()

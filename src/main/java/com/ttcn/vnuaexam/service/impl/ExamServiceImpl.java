@@ -23,6 +23,7 @@ import com.ttcn.vnuaexam.service.mapper.ExamMapper;
 import com.ttcn.vnuaexam.service.mapper.SubjectMapper;
 import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -52,6 +53,7 @@ public class ExamServiceImpl implements ExamService {
     private final AnswerService answerService;
     private final AnswerRepository answerRepository;
     private final AnswerMapper answerMapper;
+    private static final int NUM_VERSIONS = 4;
 
     @Cacheable(value = "exam", key = "#id", unless = "#result == null")
     @Override
@@ -93,6 +95,56 @@ public class ExamServiceImpl implements ExamService {
         // tra ra exam
         var result = examMapper.entityToResponse(exam);
         Collections.shuffle(questionsResponses);
+        result.setQuestions(questionsResponses);
+        return result;
+    }
+
+    @Override
+    @Cacheable(value = "exam", key = "'exam:' + #examId + 'v:' + (#studentId % " + NUM_VERSIONS + ")")
+    public ExamResponseDto getExamForStudent(Long examId, Long studentId) throws EMException {
+        // Lay de thi
+        var exam = examRepository.findById(examId).orElseThrow(() -> new EMException(NOT_FOUND));
+
+        //Lay danh sach id cau hoi
+        var examQuestions = examQuestionRepository.findByExamId(exam.getId());
+        List<Long> questionIds = examQuestions.stream().map(ExamQuestion::getQuestionId).toList();
+
+        //Lay cau hoi theo list id(service)
+        var questionsResponses = questionService.getAllByIds(questionIds);
+
+        // Lay dap an va shuffle theo version
+        int version = (int)(studentId % NUM_VERSIONS);
+        Random random = new Random(examId * 100 + version); // Seed cố định cho mỗi version
+
+        if (!questionsResponses.isEmpty()) {
+            for (QuestionResponseDto question : questionsResponses) {
+                var answersEntity = answerRepository.findByQuestionId(question.getId());
+                var answersResponse = answersEntity.stream()
+                        .map(answerMapper::entityToResponse)
+                        .collect(Collectors.toList());
+
+                // de cau allAnswer ở cuối
+                AnswerResponseDto lastAnswer = answersResponse.stream()
+                        .filter(a -> a.getType() != null && a.getType().equals(TypeAnswerEnum.LAST_ANSWER.getCode()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (lastAnswer != null) {
+                    answersResponse.remove(lastAnswer);
+                    // Sử dụng cùng một Random instance để đảm bảo tính nhất quán
+                    Collections.shuffle(answersResponse, random);
+                    answersResponse.add(lastAnswer);
+                } else {
+                    Collections.shuffle(answersResponse, random);
+                }
+
+                question.setAnswers(answersResponse);
+            }
+        }
+
+        // tra ra exam và shuffle câu hỏi với cùng seed
+        var result = examMapper.entityToResponse(exam);
+        Collections.shuffle(questionsResponses, random);
         result.setQuestions(questionsResponses);
 
         return result;
