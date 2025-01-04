@@ -90,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .subject(user.getUsername())
                 .issuer("Test.com")
                 .issueTime(new Date())
-                .expirationTime(new Date(new Date().getTime() + 3600 * 1000))
+                .expirationTime(new Date(new Date().getTime() + 3600 * 10000))
                 .claim("Scope", buildScope(user))
                 .build();
 
