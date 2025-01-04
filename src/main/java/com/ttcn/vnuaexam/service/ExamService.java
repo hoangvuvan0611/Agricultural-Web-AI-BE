@@ -5,6 +5,7 @@ import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
 import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
 import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
 import com.ttcn.vnuaexam.entity.Exam;
+import com.ttcn.vnuaexam.entity.ExamRoom;
 import com.ttcn.vnuaexam.exception.EMException;
 import org.springframework.data.domain.Page;
 
@@ -12,6 +13,8 @@ import java.util.List;
 
 public interface ExamService {
     ExamResponseDto getById(Long id) throws EMException;
+
+    ExamResponseDto getExamForStudent(Long examId, Long studentId) throws EMException;
 
     ExamResponseDto create(ExamRequestDto examRequestDto) throws EMException;
 
