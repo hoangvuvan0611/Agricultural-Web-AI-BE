@@ -1,87 +1,84 @@
 package com.ttcn.vnuaexam.utils;
 
-import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Optional;
 
-public class FileUtils {
+public final class FileUtils {
     private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
-    public static final char COMMA = '.';
 
     public FileUtils() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
-    public static String getFileExtension(String filename) {
-        if (StringUtils.isBlank(filename)) {
-            return null;
-        } else {
-            int pos = filename.lastIndexOf(".");
-            return pos > 0 ? filename.substring(pos + 1) : null;
-        }
+    /**
+     * Get file extension from filename
+     * @param filename the name of the file
+     * @return the extension or null if none exists
+     */
+    public static Optional<String> getFileExtension(String filename) {
+        return Optional.ofNullable(filename)
+                .filter(f -> !f.isBlank())
+                .map(f -> f.lastIndexOf("."))
+                .filter(pos -> pos > 0)
+                .map(pos -> filename.substring(pos + 1));
     }
 
-    public static void saveFile(String filePath, byte[] data) {
+    /**
+     * Save byte array to file
+     * @param filePath path to save the file
+     * @param data byte array to save
+     * @throws IOException if an I/O error occurs
+     */
+    public static void saveFile(Path filePath, byte[] data) throws IOException {
         try {
-            FileOutputStream stream = new FileOutputStream(filePath);
+            // Create parent directories if they don't exist
+            Files.createDirectories(filePath.getParent());
 
-            try {
-                stream.write(data);
-            } catch (Throwable var6) {
-                try {
-                    stream.close();
-                } catch (Throwable var5) {
-                    var6.addSuppressed(var5);
-                }
-
-                throw var6;
+            // Use try-with-resources for automatic resource management
+            try (var outputStream = Files.newOutputStream(filePath,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING)) {
+                outputStream.write(data);
             }
-
-            stream.close();
-        } catch (IOException var7) {
-            IOException e = var7;
-            log.error("ERROR save filePath = {}", filePath, e);
+        } catch (IOException e) {
+            log.error("Error saving file to path = {}", filePath, e);
+            throw e; // Rethrow to allow caller to handle
         }
-
     }
 
-    public static void saveFile(String filePath, MultipartFile file) {
+    /**
+     * Save MultipartFile to file system
+     * @param filePath path to save the file
+     * @param file MultipartFile to save
+     * @throws IOException if an I/O error occurs
+     */
+    public static void saveFile(Path filePath, MultipartFile file) throws IOException {
         try {
-            FileOutputStream stream = new FileOutputStream(filePath);
-
-            try {
-                stream.write(file.getBytes());
-            } catch (Throwable var6) {
-                try {
-                    stream.close();
-                } catch (Throwable var5) {
-                    var6.addSuppressed(var5);
-                }
-
-                throw var6;
-            }
-
-            stream.close();
-        } catch (IOException var7) {
-            IOException e = var7;
-            log.error("ERROR save filePath = {}", filePath, e);
+            saveFile(filePath, file.getBytes());
+        } catch (IOException e) {
+            log.error("Error saving MultipartFile to path = {}", filePath, e);
+            throw e;
         }
-
     }
 
-    public static void deleteFile(String filePath) {
+    /**
+     * Delete file from file system
+     * @param filePath path of file to delete
+     * @throws IOException if an I/O error occurs
+     */
+    public static void deleteFile(Path filePath) throws IOException {
         try {
-            File fileToDelete = new File(filePath);
-            Files.delete(fileToDelete.toPath());
-        } catch (IOException var2) {
-            IOException e = var2;
-            log.error("ERROR delete filePath = {}", filePath, e);
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            log.error("Error deleting file at path = {}", filePath, e);
+            throw e;
         }
-
     }
 }

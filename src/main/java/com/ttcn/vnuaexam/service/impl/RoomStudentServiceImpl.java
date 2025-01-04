@@ -1,53 +1,43 @@
 package com.ttcn.vnuaexam.service.impl;
 
-import com.ttcn.vnuaexam.dto.request.RoomStudentRequestDto;
+import com.ttcn.vnuaexam.entity.RoomStudent;
+import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.repository.RoomStudentRepository;
 import com.ttcn.vnuaexam.repository.UserRepository;
 import com.ttcn.vnuaexam.service.RoomStudentService;
-import com.ttcn.vnuaexam.service.mapper.RoomStudentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_STUDENT_DUPLICATE;
-import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_STUDENT_IS_NOT_EXISTED;
+import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.*;
 
 @Service
 @AllArgsConstructor
 public class RoomStudentServiceImpl implements RoomStudentService {
     private final RoomStudentRepository roomStudentRepository;
-    private final RoomStudentMapper roomStudentMapper;
     private final UserRepository userRepository;
 
     @Override
     public String addStudentToRoom(List<String> listStudentCode, Long roomId) {
-        StringBuilder message = new StringBuilder();
-        String errorMessage = "";
-
-        for (String code : listStudentCode) {
-            var user = userRepository.findByCode(code);
-            if (user.isEmpty()) {
-                errorMessage = String.format(CODE_STUDENT_IS_NOT_EXISTED, code);
-            } else if (roomStudentRepository.existsByStudentId(user.get().getId())) {
-                errorMessage = String.format(CODE_STUDENT_DUPLICATE, code);
-            }
-
-            if (StringUtils.hasText(errorMessage)) {
-                message.append(errorMessage);
-                continue;
-            }
-
-            RoomStudentRequestDto requestDto = RoomStudentRequestDto.builder()
-                    .examRoomId(roomId)
-                    .studentId(user.get().getId())
-                    .build();
-
-            var entity = roomStudentMapper.requestDtoToEntity(requestDto);
-            roomStudentRepository.save(entity);
-        }
-        return message.toString();
+        return listStudentCode.stream()
+                .map(code -> userRepository.findByCode(code)
+                        .map(user -> processStudent(user, code, roomId))
+                        .orElse(String.format(CODE_STUDENT_IS_NOT_EXISTED, code)))
+                .filter(StringUtils::hasText)
+                .collect(Collectors.joining());
     }
+    private String processStudent(User user, String code, Long roomId) {
+        if (roomStudentRepository.existsByStudentIdAndExamRoomId(user.getId(), roomId)) {
+            return String.format(CODE_STUDENT_JOINED, code);
+        }
 
+        var entity = new RoomStudent();
+        entity.setStudentId(user.getId());
+        entity.setExamRoomId(roomId);
+        roomStudentRepository.save(entity);
+        return "";
+    }
 }

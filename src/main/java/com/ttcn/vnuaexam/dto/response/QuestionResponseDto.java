@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,10 +15,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionResponseDto extends BaseObjectDto {
+public class QuestionResponseDto extends BaseObjectDto implements Serializable {
     private Long id;
     private Long subjectId;
     private Long chapterId;
+    private String subjectName;
+    private String chapterName;
     private String code;
     private String content;
     private String image;

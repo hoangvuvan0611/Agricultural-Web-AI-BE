@@ -178,7 +178,6 @@ public class SubjectServiceImpl implements SubjectService {
             dto.setUserId(userCurrent.getId());
 
         Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
-        Page<Subject> resultEntity = subjectRepository.search(dto, pageRequest);
-        return resultEntity.map(subject -> subjectMapper.entityToResponse(subject));
+        return subjectRepository.search(dto, pageRequest);
     }
 }

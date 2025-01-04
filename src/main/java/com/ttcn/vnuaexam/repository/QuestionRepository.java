@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.repository;
 
+import com.ttcn.vnuaexam.dto.response.QuestionResponseDto;
 import com.ttcn.vnuaexam.dto.search.ChapterSearchDto;
 import com.ttcn.vnuaexam.dto.search.QuestionSearchDto;
 import com.ttcn.vnuaexam.entity.Chapter;

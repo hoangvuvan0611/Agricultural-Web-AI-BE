@@ -3,6 +3,7 @@ package com.ttcn.vnuaexam.service;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.dto.search.UserSearchDto;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -25,5 +26,5 @@ public interface UserService {
 
     UserClientDto getCurrentUser() throws EMException;
 
-    Page<UserResponseDto> search(UserSearchDto searchDto);
+    Page<UserResponseDto> search(SearchDto dto);
 }
