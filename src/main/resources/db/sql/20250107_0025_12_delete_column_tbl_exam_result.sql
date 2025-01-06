@@ -1,0 +1,3 @@
+ALTER TABLE tbl_exam_result
+MODIFY COLUMN exam_session_id BIGINT NULL DEFAULT NULL;
+

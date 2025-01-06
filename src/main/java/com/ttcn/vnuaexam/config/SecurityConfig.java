@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/exam/**").hasAuthority("TEACHER")
                         .requestMatchers("/api/proctor/exam-session").hasAuthority("PROCTOR")
                         .requestMatchers("/api/student/exam-session").hasAuthority("STUDENT")
+                        .requestMatchers("/api/submit/**").hasAuthority("STUDENT")
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2

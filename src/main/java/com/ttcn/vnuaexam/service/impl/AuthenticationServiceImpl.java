@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         StringJoiner scopeJoiner = new StringJoiner(" ");
         if (user.getRole() != null) {
             Role role = Role.formNumRole(user.getRole());
-            if (role != null && role != Role.UNKNOWN_ROLE) {
+            if (role != null) {
                 scopeJoiner.add(role.name());
             } else {
                 scopeJoiner.add("UNKNOWN_ROLE");

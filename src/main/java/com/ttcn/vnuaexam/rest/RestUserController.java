@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.rest;
 
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -56,4 +58,8 @@ public class RestUserController {
         return new EMResponse<>(userService.search(dto));
     }
 
+    @GetMapping("/get-role")
+    public EMResponse<Map<Integer, String>> getRole() {
+        return new EMResponse<>(Role.getRoleMap());
+    }
 }
