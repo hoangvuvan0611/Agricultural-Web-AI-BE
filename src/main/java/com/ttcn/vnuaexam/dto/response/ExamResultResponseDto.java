@@ -6,8 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExamResultResponseDto {
-    private String id;
-    private String examSessionId;
+    private Long id;
+    private Long examRoomId;
+    private Long studentId;
     private double totalScore;
     private int correctCount;
     private int wrongCount;
