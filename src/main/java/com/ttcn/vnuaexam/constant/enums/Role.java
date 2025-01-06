@@ -3,6 +3,11 @@ package com.ttcn.vnuaexam.constant.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Getter
 @AllArgsConstructor
 public enum Role    {
@@ -10,7 +15,6 @@ public enum Role    {
     TEACHER(2,"Giảng viên" ),
     PROCTOR(3,"Giám thị" ),
     STUDENT(4,"Thí sinh" ),
-    UNKNOWN_ROLE(0," un");
     ;
     @Getter
     private final Integer numRole;
@@ -19,11 +23,20 @@ public enum Role    {
 
     public static Role formNumRole(Integer numRole) {
         for (Role role : Role.values()) {
-            if (role.getNumRole() == numRole) {
+            if (Objects.equals(role.getNumRole(), numRole)) {
                 return role;
             }
         }
-        return UNKNOWN_ROLE;
+        return null;
     }
 
+
+
+    public static Map<Integer, String> getRoleMap() {
+        return Arrays.stream(Role.values())
+                .collect(Collectors.toMap(
+                        Role::getNumRole,
+                        Role::getValue
+                ));
+    }
 }

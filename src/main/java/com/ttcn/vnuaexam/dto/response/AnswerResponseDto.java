@@ -1,6 +1,5 @@
 package com.ttcn.vnuaexam.dto.response;
 
-import com.ttcn.vnuaexam.constant.enums.TypeAnswerEnum;
 import com.ttcn.vnuaexam.dto.BaseObjectDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +16,7 @@ public class AnswerResponseDto extends BaseObjectDto implements Serializable {
     private Long id;
     private Long questionId;
     private Integer orderNumber;
+    private Boolean isCorrect;
     private String content;
     private String image;
     private Integer type;
