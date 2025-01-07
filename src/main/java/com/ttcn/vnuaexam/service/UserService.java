@@ -26,5 +26,7 @@ public interface UserService {
 
     UserClientDto getCurrentUser() throws EMException;
 
-    Page<UserResponseDto> search(SearchDto dto);
+    Page<UserResponseDto> searchStudent(UserSearchDto dto);
+
+    List<UserResponseDto> searchUserList(UserSearchDto dto);
 }
