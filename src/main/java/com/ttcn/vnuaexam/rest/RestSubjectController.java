@@ -22,6 +22,7 @@ public class RestSubjectController {
         return new EMResponse<>(subjectService.getById(id));
     }
 
+    // Thêm mới môn học
     @PostMapping()
     public EMResponse<SubjectResponseDto> create(@RequestBody SubjectRequestDto requestDto) throws EMException {
         return new EMResponse<>(subjectService.create(requestDto));
@@ -32,12 +33,12 @@ public class RestSubjectController {
         return new EMResponse<>(subjectService.update(requestDto, id));
     }
 
-    // Xem lại
     @DeleteMapping("/{id}")
     public EMResponse<Boolean> delete(@PathVariable("id") Long id) throws EMException {
         return new EMResponse<>(subjectService.deleteById(id));
     }
 
+    // Hiển thị danh sách môn học.
     @GetMapping("/search")
     public EMResponse<Page<SubjectResponseDto>> search(SubjectSearchDto dto) throws EMException {
         return new EMResponse<>(subjectService.searchSubject(dto));

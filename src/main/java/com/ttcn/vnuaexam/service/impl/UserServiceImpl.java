@@ -1,11 +1,8 @@
 package com.ttcn.vnuaexam.service.impl;
 
-import com.ttcn.vnuaexam.constant.enums.Role;
-import com.ttcn.vnuaexam.dto.MessageDataDTO;
 import com.ttcn.vnuaexam.dto.client.UserClientDto;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
 import com.ttcn.vnuaexam.dto.response.UserResponseDto;
-import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.dto.search.UserSearchDto;
 import com.ttcn.vnuaexam.entity.User;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -14,10 +11,9 @@ import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.UserMapper;
 import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
-import org.mapstruct.control.MappingControl;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -197,7 +193,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserResponseDto> searchStudent(UserSearchDto dto) {
         dto.setUserRole(STUDENT.getNumRole());
-        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        Pageable pageRequest;
+        if (dto.getSortField() != null && dto.getSortDirection() != null) {
+            Sort sort = Sort.by(dto.getSortDirection().equalsIgnoreCase("DESC") ?
+                    Sort.Direction.DESC : Sort.Direction.ASC, dto.getSortField());
+            pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize(), sort);
+        } else {
+            pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        }
+
         Page<User> usersEntity = userRepository.searchStudent(dto, pageRequest);
         return usersEntity.map(userMapper::entityToResponse);
     }
