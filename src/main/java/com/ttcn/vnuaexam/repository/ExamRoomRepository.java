@@ -1,11 +1,8 @@
 package com.ttcn.vnuaexam.repository;
 
-import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
-import com.ttcn.vnuaexam.dto.request.ExamRoomRequestDto;
-import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
-import com.ttcn.vnuaexam.entity.Exam;
+import com.ttcn.vnuaexam.dto.response.ExamRoomResponseDto;
+import com.ttcn.vnuaexam.dto.search.ExamRoomSearchDto;
 import com.ttcn.vnuaexam.entity.ExamRoom;
-import com.ttcn.vnuaexam.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ExamRoomRepository extends JpaRepository<ExamRoom, Long> {
+    @Query("SELECT new com.ttcn.vnuaexam.dto.response.ExamRoomResponseDto( " +
+            "r.id, " +
+            "r.examId, " +
+            "r.teacherId, " +
+            "r.room, " +
+            "r.startTime, " +
+            "r.endTime, " +
+            "r.status ) " +
+            "FROM ExamRoom r " +
+            "WHERE (:#{#dto.userId} is null OR r.teacherId = :#{#dto.userId})")
+    Page<ExamRoomResponseDto> search(@Param("dto") ExamRoomSearchDto dto, Pageable pageable);
 }
