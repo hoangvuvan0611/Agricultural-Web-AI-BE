@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import static com.ttcn.vnuaexam.constant.MessageCodes.ImportStudent.CODE_STUDENT_DUPLICATE;
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.*;
 import static com.ttcn.vnuaexam.constant.enums.Role.STUDENT;
+import static com.ttcn.vnuaexam.constant.enums.Role.TEACHER;
 
 @Service
 @AllArgsConstructor
@@ -194,9 +195,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponseDto> search(SearchDto dto) {
+    public Page<UserResponseDto> searchStudent(UserSearchDto dto) {
+        dto.setUserRole(STUDENT.getNumRole());
         Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
-        Page<User> usersEntity = userRepository.search(dto, pageRequest);
+        Page<User> usersEntity = userRepository.searchStudent(dto, pageRequest);
         return usersEntity.map(userMapper::entityToResponse);
+    }
+
+    @Override
+    public List<UserResponseDto> searchUserList(UserSearchDto dto) {
+        dto.setUserRole(TEACHER.getNumRole());
+        var userList = userRepository.searchUserList(dto);
+        return userList.stream().map(userMapper::entityToResponse).toList();
     }
 }

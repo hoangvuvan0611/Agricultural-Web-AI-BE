@@ -23,18 +23,21 @@ import java.util.Map;
 public class RestUserController {
     private final UserService userService;
 
+    // tạo 1 sinh viên
     @PostMapping("/add")
     public EMResponse<UserResponseDto> addUser(@RequestBody UserRequestDto requestDto) throws EMException {
         return new EMResponse<>(userService.addUser(requestDto));
     }
 
+    // Cập nhật thông tin sinh viên
     @PutMapping("/{id}")
     public EMResponse<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto requestDto) throws EMException {
         return new EMResponse<>(userService.updateUser(id, requestDto));
     }
 
+    // Hiển thị thông tin chi tiết user
     @GetMapping("/{id}")
-    public EMResponse<UserResponseDto> getUser(@PathVariable Long id) throws EMException {
+    public EMResponse<UserResponseDto> getById(@PathVariable Long id) throws EMException {
         return new EMResponse<>(userService.getUserById(id));
     }
 
@@ -43,22 +46,26 @@ public class RestUserController {
         return new EMResponse<>(userService.deleteUser(id));
     }
 
-    @GetMapping("/all")
-    public EMResponse<List<UserResponseDto>> getAllUser() throws EMException {
-        return new EMResponse<>(userService.getAllUsers());
-    }
-
+    // lấy thông tin user đang đăng nhập
     @GetMapping("/current")
     public EMResponse<UserClientDto> getCurrent() throws EMException {
         return new EMResponse<>(userService.getCurrentUser());
     }
 
-    @GetMapping("/search")
-    public EMResponse<Page<UserResponseDto>> search(UserSearchDto dto) {
-        return new EMResponse<>(userService.search(dto));
+    // lấy ra Page sinh viên, hiển thị danh sách sinh viên
+    @GetMapping("/search-student")
+    public EMResponse<Page<UserResponseDto>> searchStudent(UserSearchDto dto) {
+        return new EMResponse<>(userService.searchStudent(dto));
     }
 
-    @GetMapping("/get-role")
+    // lấy danh sách user giảng viên, giám thị
+    @GetMapping("/search-user-list")
+    public EMResponse<List<UserResponseDto>> searchUserList(UserSearchDto dto) {
+        return new EMResponse<>(userService.searchUserList(dto));
+    }
+
+    // lấy danh sách role user
+    @GetMapping("/get-role-map")
     public EMResponse<Map<Integer, String>> getRole() {
         return new EMResponse<>(Role.getRoleMap());
     }

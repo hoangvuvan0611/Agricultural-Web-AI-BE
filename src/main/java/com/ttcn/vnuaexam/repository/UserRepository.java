@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.repository;
 
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.dto.search.UserSearchDto;
 import com.ttcn.vnuaexam.entity.User;
@@ -10,10 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    final Integer roleStudent = Role.STUDENT.getNumRole();
 
     Optional<User> findByCode(String code);
 
@@ -28,6 +31,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = " FROM User user " +
             " WHERE (:#{#dto.keyword} IS NULL OR :#{#dto.keyword} = '' " +
             "        OR user.code LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
-            "        OR user.fullName LIKE CONCAT('%', :#{#dto.keyword}, '%')) ")
-    Page<User> search(@Param("dto") SearchDto dto, Pageable pageable);
+            "        OR user.fullName LIKE CONCAT('%', :#{#dto.keyword}, '%')" +
+            "        OR user.classCode LIKE CONCAT('%', :#{#dto.keyword}, '%'))" +
+            " AND :#{#dto.userRole} is null OR user.role = :#{#dto.userRole} ")
+    Page<User> searchStudent(@Param("dto") UserSearchDto dto, Pageable pageable);
+
+    @Query(value = " FROM User user " +
+            " WHERE (:#{#dto.keyword} IS NULL OR :#{#dto.keyword} = '' " +
+            "        OR user.code LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
+            "        OR user.fullName LIKE CONCAT('%', :#{#dto.keyword}, '%'))" +
+            " AND :#{#dto.userRole} is null OR user.role = :#{#dto.userRole} ")
+    List<User> searchUserList(@Param("dto") UserSearchDto dto);
 }

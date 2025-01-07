@@ -7,7 +7,6 @@ import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.ExamService;
 import com.ttcn.vnuaexam.service.UserService;
-import com.ttcn.vnuaexam.service.mapper.ExamMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
