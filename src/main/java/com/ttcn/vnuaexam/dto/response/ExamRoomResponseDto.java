@@ -1,5 +1,6 @@
 package com.ttcn.vnuaexam.dto.response;
 
+import com.ttcn.vnuaexam.constant.enums.StatusExamRoomEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,5 +16,10 @@ public class ExamRoomResponseDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime sessionDate;
-    private int status;
+    private String status;
+
+    public void setStatus(Integer statusCode) {
+        if (statusCode != null)
+            this.status = StatusExamRoomEnum.fromCode(statusCode).getValue();
+    }
 }

@@ -22,7 +22,7 @@ public interface ExamService {
 
     ErrorCodeEnum saveQuestion(Long examId, List<Long> questionIds) throws EMException;
 
-    Page<ExamResponseDto> search(ExamSearchDto searchDto);
+    Page<ExamResponseDto> search(ExamSearchDto searchDto) throws EMException;
 
     Boolean deleteById(Long id) throws EMException;
 }

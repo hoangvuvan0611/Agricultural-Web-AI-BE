@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestExamResultController {
     private final ExamResultService examResultService;
 
+
+    // Nộp bài
     @PostMapping()
     public EMResponse<ExamResultResponseDto> submit(@RequestBody ExamResultRequestDto requestDto) throws EMException {
         return new EMResponse<>(examResultService.submitExam(requestDto));
