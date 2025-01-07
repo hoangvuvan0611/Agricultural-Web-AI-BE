@@ -1,6 +1,7 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.constant.enums.TypeAnswerEnum;
 import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
 import com.ttcn.vnuaexam.dto.request.ExamRequestDto;
@@ -18,6 +19,7 @@ import com.ttcn.vnuaexam.repository.SubjectRepository;
 import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.ExamService;
 import com.ttcn.vnuaexam.service.QuestionService;
+import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import com.ttcn.vnuaexam.service.mapper.ExamMapper;
 import com.ttcn.vnuaexam.service.mapper.SubjectMapper;
@@ -39,7 +41,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum.NOT_FOUND;
-import static com.ttcn.vnuaexam.constant.enums.StatusExamEnum.DOING;
 
 @AllArgsConstructor
 @Service
@@ -50,6 +51,7 @@ public class ExamServiceImpl implements ExamService {
     private final ExamMapper examMapper;
     private final ExamQuestionRepository examQuestionRepository;
     private final SubjectRepository subjectRepository;
+    private final UserService userService;
     private final AnswerService answerService;
     private final AnswerRepository answerRepository;
     private final AnswerMapper answerMapper;
@@ -221,7 +223,11 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Page<ExamResponseDto> search(ExamSearchDto searchDto) {
+    public Page<ExamResponseDto> search(ExamSearchDto searchDto) throws EMException {
+        var currentUser = userService.getCurrentUser();
+        if (currentUser != null && currentUser.getRole().equals(Role.TEACHER))
+            searchDto.setUserId(currentUser.getId());
+
         Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
         Page<ExamResultSetResponse> examResult = examRepository.search(searchDto, pageRequest);
         return examResult.map(ExamResponseDto::new);

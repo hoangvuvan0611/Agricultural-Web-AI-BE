@@ -47,7 +47,7 @@ public class RestExamController {
     }
 
     @GetMapping("/search")
-    public EMResponse<Page<ExamResponseDto>> search(ExamSearchDto dto) {
+    public EMResponse<Page<ExamResponseDto>> search(ExamSearchDto dto) throws EMException {
         return new EMResponse<>(examService.search(dto));
     }
 

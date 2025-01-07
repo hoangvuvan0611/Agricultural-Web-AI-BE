@@ -20,7 +20,6 @@ public enum Role    {
     private final Integer numRole;
     private final String value;
 
-
     public static Role formNumRole(Integer numRole) {
         for (Role role : Role.values()) {
             if (Objects.equals(role.getNumRole(), numRole)) {
@@ -29,8 +28,6 @@ public enum Role    {
         }
         return null;
     }
-
-
 
     public static Map<Integer, String> getRoleMap() {
         return Arrays.stream(Role.values())

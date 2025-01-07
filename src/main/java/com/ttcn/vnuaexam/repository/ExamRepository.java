@@ -39,7 +39,9 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
             " s.name as subjectName " +
             " FROM tbl_exam e " +
             " LEFT JOIN tbl_subject s ON e.subject_id = s.id " +
+            " LEFT JOIN tbl_usert_subject us ON us.subject_id = e.subject_id " +
             " WHERE (dto.subjectId is null OR e.subject_id = dto.subjectId) " +
+            " AND (dto.userId is null OR us.user_id = dto.userId) " +
             " AND (dto.keyword is null OR dto.keyword = '' " +
             " OR e.title LIKE CONCAT('%', dto.keyword, '%') " +
             " OR e.description LIKE CONCAT('%', dto.keyword, '%')) ", nativeQuery = true)
