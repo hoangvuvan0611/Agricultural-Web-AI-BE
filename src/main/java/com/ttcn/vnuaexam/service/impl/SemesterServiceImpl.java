@@ -5,6 +5,7 @@ import com.ttcn.vnuaexam.dto.request.AnswerRequestDto;
 import com.ttcn.vnuaexam.dto.request.SemesterRequestDto;
 import com.ttcn.vnuaexam.dto.response.AnswerResponseDto;
 import com.ttcn.vnuaexam.dto.response.SemesterResponseDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.entity.Answer;
 import com.ttcn.vnuaexam.entity.Semester;
 import com.ttcn.vnuaexam.exception.EMException;
@@ -16,7 +17,10 @@ import com.ttcn.vnuaexam.service.AnswerService;
 import com.ttcn.vnuaexam.service.SemesterService;
 import com.ttcn.vnuaexam.service.mapper.AnswerMapper;
 import com.ttcn.vnuaexam.service.mapper.SemesterMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,5 +51,12 @@ public class SemesterServiceImpl implements SemesterService {
         semesterMapper.setValue(requestDto, semester);
         semesterRepository.save(semester);
         return semesterMapper.entityToResponse(semester);
+    }
+
+    @Override
+    public Page<SemesterResponseDto> search(SearchDto dto) {
+        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        var semesterEntity = semesterRepository.search(dto, pageRequest);
+        return semesterEntity.map(semesterMapper::entityToResponse);
     }
 }

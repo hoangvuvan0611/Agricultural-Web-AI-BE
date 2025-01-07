@@ -223,14 +223,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Page<ExamResponseDto> search(ExamSearchDto searchDto) throws EMException {
+    public Page<ExamResponseDto> search(ExamSearchDto dto) throws EMException {
         var currentUser = userService.getCurrentUser();
         if (currentUser != null && currentUser.getRole().equals(Role.TEACHER))
-            searchDto.setUserId(currentUser.getId());
+            dto.setUserId(currentUser.getId());
 
-        Pageable pageRequest = PageUtils.getPageable(searchDto.getPageIndex(), searchDto.getPageSize());
-        Page<ExamResultSetResponse> examResult = examRepository.search(searchDto, pageRequest);
-        return examResult.map(ExamResponseDto::new);
+        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        return examRepository.searchV2(dto, pageRequest);
     }
 
     @Override

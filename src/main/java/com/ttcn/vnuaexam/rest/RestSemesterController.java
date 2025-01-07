@@ -2,10 +2,12 @@ package com.ttcn.vnuaexam.rest;
 
 import com.ttcn.vnuaexam.dto.request.SemesterRequestDto;
 import com.ttcn.vnuaexam.dto.response.SemesterResponseDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.exception.EMException;
 import com.ttcn.vnuaexam.response.EMResponse;
 import com.ttcn.vnuaexam.service.SemesterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,5 +29,10 @@ public class RestSemesterController {
     @PutMapping("/{id}")
     public EMResponse<SemesterResponseDto> update(@PathVariable("id") Long id, @RequestBody SemesterRequestDto requestDto) throws EMException {
         return new EMResponse<>(semesterService.update(id, requestDto));
+    }
+
+    @GetMapping("/search")
+    public EMResponse<Page<SemesterResponseDto>> search(SearchDto dto) {
+        return new EMResponse<>(semesterService.search(dto));
     }
 }

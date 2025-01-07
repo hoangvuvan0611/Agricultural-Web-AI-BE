@@ -45,22 +45,19 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
             " OR e.description LIKE CONCAT('%', :#{#dto.keyword}, '%')) ", nativeQuery = true)
     Page<ExamResultSetResponse> search(@Param("dto") ExamSearchDto dto, Pageable pageable);
 
-     /*
-    @Query(value = "SELECT new com.ttcn.vnuaexam.dto.response.ExamResponseDto(" +
-            " e.id, " +
-            " e.examSetId," +
-            " e.subjectId," +
-            " sbj.name," +
-            " es.title," +
-            " e.title," +
-            " e.duration, " +
-            " e.totalQuestions, " +
-            " e.totalScore )" +
-            " FROM Exam e " +
-            " LEFT JOIN ExamSet es ON es.id = e.examSetId " +
-            " LEFT JOIN Subject sbj ON sbj.id = e.subjectId " +
-            " WHERE (:#{dto.keyword} is null OR :#{#dto.keyword} = '' " +
-            " OR e.)")
-    Page<ExamResponseDto> search(@Param("dto") ExamSearchDto dto, Pageable pageable);
-    */
+    @Query("SELECT new com.ttcn.vnuaexam.dto.response.ExamResponseDto(" +
+            "e.id, " +
+            "e.examSetId, " +
+            "e.subjectId, " +
+            "sbj.name, " +
+            "es.title, " +
+            "e.title, " +
+            "e.duration, " +
+            "e.totalQuestions, " +
+            "e.totalScore) " +
+            "FROM Exam e " +
+            "LEFT JOIN ExamSet es ON es.id = e.examSetId " +
+            "LEFT JOIN Subject sbj ON sbj.id = e.subjectId " +
+            "WHERE (:#{#dto.subjectId} is null OR e.subjectId = :#{#dto.subjectId})")
+    Page<ExamResponseDto> searchV2(@Param("dto") ExamSearchDto dto, Pageable pageable);
 }
