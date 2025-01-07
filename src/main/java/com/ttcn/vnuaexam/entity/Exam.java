@@ -21,6 +21,9 @@ public class Exam extends BaseEntity {
     @Column(name = "subject_id")
     private Long subjectId;
 
+    @Column(name = "exam_set_id")
+    private Long examSetId;
+
     @Column(name = "code")
     private String code;
 

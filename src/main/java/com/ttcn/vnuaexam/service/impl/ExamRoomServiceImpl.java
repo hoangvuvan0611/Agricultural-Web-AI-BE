@@ -1,6 +1,7 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import com.ttcn.vnuaexam.constant.enums.StatusExamRoomEnum;
 import com.ttcn.vnuaexam.dto.request.ExamRoomRequestDto;
 import com.ttcn.vnuaexam.dto.response.ExamRoomResponseDto;
 import com.ttcn.vnuaexam.entity.ExamRoom;
@@ -19,25 +20,26 @@ import java.util.stream.Collectors;
 @Service
 public class ExamRoomServiceImpl implements ExamRoomService {
     private final UserService userService;
-    private final ExamRoomMapper examSessionMapper;
+    private final ExamRoomMapper examRoomMapper;
     private final ExamRoomRepository examRoomRepository;
 
     @Override
     public ExamRoomResponseDto add(ExamRoomRequestDto requestDto) throws EMException {
         var currentUser = userService.getCurrentUser();
         requestDto.setTeacherId(currentUser.getId());
-        var examSession = examSessionMapper.requestDtoToEntity(requestDto);
+        var examSession = examRoomMapper.requestDtoToEntity(requestDto);
+        examSession.setStatus(StatusExamRoomEnum.COMING_SON.getCode());
         examRoomRepository.save(examSession);
-        return examSessionMapper.entityToResponseDto(examSession);
+        return examRoomMapper.entityToResponseDto(examSession);
     }
 
     @Override
     public ExamRoomResponseDto update(Long id, ExamRoomRequestDto ExamRoomRequestDto) throws EMException {
         var ExamSession = examRoomRepository.findById(id)
                 .orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND_EXAMSESSION));
-        examSessionMapper.setValue(ExamRoomRequestDto, ExamSession);
+        examRoomMapper.setValue(ExamRoomRequestDto, ExamSession);
         examRoomRepository.save(ExamSession);
-        return examSessionMapper.entityToResponseDto(ExamSession);
+        return examRoomMapper.entityToResponseDto(ExamSession);
     }
 
     @Override
@@ -51,21 +53,22 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     @Override
     public ExamRoomResponseDto findById(Long id) throws EMException {
         var examSession = examRoomRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND_EXAMSESSION));
-        return examSessionMapper.entityToResponseDto(examSession);
+        return examRoomMapper.entityToResponseDto(examSession);
     }
 
     @Override
     public List<ExamRoomResponseDto> findAll() {
         List<ExamRoom> examSessions = examRoomRepository.findAll();
         return examSessions.stream()
-                .map(examSessionMapper::entityToResponseDto)
+                .map(examRoomMapper::entityToResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Boolean start(Long id, ExamRoomRequestDto requestDto) throws EMException {
+    public Boolean updateStatus(Long id, Integer status) throws EMException {
         var examRoom = examRoomRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
-        examSessionMapper.setValue(requestDto, examRoom);
+        examRoom.setStatus(status);
+        examRoomRepository.save(examRoom);
         return true;
     }
 }

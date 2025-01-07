@@ -1,20 +1,18 @@
 package com.ttcn.vnuaexam.repository;
 
 import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
+import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
 import com.ttcn.vnuaexam.dto.search.ExamSearchDto;
 import com.ttcn.vnuaexam.entity.Exam;
 import com.ttcn.vnuaexam.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
@@ -23,7 +21,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
             " LEFT JOIN tbl_exam ex ON ex.id = exq.exam_id " +
             " LEFT JOIN tbl_question q ON q.id = exq.question_id " +
             " WHERE ex.id = :examId",
-    nativeQuery = true)
+            nativeQuery = true)
     List<Question> findQuestionInExam(@Param("examId") Long examId);
 
     void deleteBySubjectId(Long id);
@@ -46,4 +44,23 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
             " OR e.title LIKE CONCAT('%', :#{#dto.keyword}, '%') " +
             " OR e.description LIKE CONCAT('%', :#{#dto.keyword}, '%')) ", nativeQuery = true)
     Page<ExamResultSetResponse> search(@Param("dto") ExamSearchDto dto, Pageable pageable);
+
+     /*
+    @Query(value = "SELECT new com.ttcn.vnuaexam.dto.response.ExamResponseDto(" +
+            " e.id, " +
+            " e.examSetId," +
+            " e.subjectId," +
+            " sbj.name," +
+            " es.title," +
+            " e.title," +
+            " e.duration, " +
+            " e.totalQuestions, " +
+            " e.totalScore )" +
+            " FROM Exam e " +
+            " LEFT JOIN ExamSet es ON es.id = e.examSetId " +
+            " LEFT JOIN Subject sbj ON sbj.id = e.subjectId " +
+            " WHERE (:#{dto.keyword} is null OR :#{#dto.keyword} = '' " +
+            " OR e.)")
+    Page<ExamResponseDto> search(@Param("dto") ExamSearchDto dto, Pageable pageable);
+    */
 }
