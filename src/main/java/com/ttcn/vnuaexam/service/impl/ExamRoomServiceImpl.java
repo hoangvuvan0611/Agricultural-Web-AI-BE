@@ -1,16 +1,25 @@
 package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.enums.ErrorCodeEnum;
+import com.ttcn.vnuaexam.constant.enums.Role;
 import com.ttcn.vnuaexam.constant.enums.StatusExamRoomEnum;
+import com.ttcn.vnuaexam.corollary.ExamResultSetResponse;
 import com.ttcn.vnuaexam.dto.request.ExamRoomRequestDto;
+import com.ttcn.vnuaexam.dto.response.ExamResponseDto;
 import com.ttcn.vnuaexam.dto.response.ExamRoomResponseDto;
+import com.ttcn.vnuaexam.dto.search.ExamRoomSearchDto;
+import com.ttcn.vnuaexam.dto.search.SearchDto;
 import com.ttcn.vnuaexam.entity.ExamRoom;
 import com.ttcn.vnuaexam.exception.EMException;
+import com.ttcn.vnuaexam.repository.ExamRepository;
 import com.ttcn.vnuaexam.repository.ExamRoomRepository;
 import com.ttcn.vnuaexam.service.ExamRoomService;
 import com.ttcn.vnuaexam.service.UserService;
 import com.ttcn.vnuaexam.service.mapper.ExamRoomMapper;
+import com.ttcn.vnuaexam.utils.PageUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +31,7 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     private final UserService userService;
     private final ExamRoomMapper examRoomMapper;
     private final ExamRoomRepository examRoomRepository;
+    private final ExamRepository examRepository;
 
     @Override
     public ExamRoomResponseDto add(ExamRoomRequestDto requestDto) throws EMException {
@@ -54,6 +64,16 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     public ExamRoomResponseDto findById(Long id) throws EMException {
         var examSession = examRoomRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND_EXAMSESSION));
         return examRoomMapper.entityToResponseDto(examSession);
+    }
+
+    @Override
+    public Page<ExamRoomResponseDto> search(ExamRoomSearchDto dto) throws EMException {
+        var currentUser = userService.getCurrentUser();
+        if (currentUser != null && currentUser.getRole().equals(Role.TEACHER))
+            dto.setUserId(currentUser.getId());
+
+        Pageable pageRequest = PageUtils.getPageable(dto.getPageIndex(), dto.getPageSize());
+        return examRoomRepository.search(dto, pageRequest);
     }
 
     @Override

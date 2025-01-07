@@ -20,6 +20,9 @@ public class ExamRoom extends BaseEntity {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "room_name")
+    private String room;
+
     @Column(name = "start_time")
     private LocalDateTime startTime;
 

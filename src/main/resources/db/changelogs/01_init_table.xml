@@ -39,4 +39,7 @@
     <changeSet id="20250107_0025" author="SonDC">
         <sqlFile path="db/sql/20250107_0025_12_delete_column_tbl_exam_result.sql"/>
     </changeSet>
+    <changeSet id="20250107_2255" author="SonDC">
+        <sqlFile path="db/sql/20250107_2255_13_add_column_tbl_exam_session.sql"/>
+    </changeSet>
 </databaseChangeLog>
