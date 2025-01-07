@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @AllArgsConstructor
+@Service
 public class ExamRoomServiceImpl implements ExamRoomService {
-    private  final UserService userService;
+    private final UserService userService;
     private final ExamRoomMapper examSessionMapper;
     private final ExamRoomRepository examRoomRepository;
 
@@ -26,7 +26,6 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     public ExamRoomResponseDto add(ExamRoomRequestDto requestDto) throws EMException {
         var currentUser = userService.getCurrentUser();
         requestDto.setTeacherId(currentUser.getId());
-        requestDto.setStatus(0);
         var examSession = examSessionMapper.requestDtoToEntity(requestDto);
         examRoomRepository.save(examSession);
         return examSessionMapper.entityToResponseDto(examSession);
@@ -61,5 +60,12 @@ public class ExamRoomServiceImpl implements ExamRoomService {
         return examSessions.stream()
                 .map(examSessionMapper::entityToResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean start(Long id, ExamRoomRequestDto requestDto) throws EMException {
+        var examRoom = examRoomRepository.findById(id).orElseThrow(() -> new EMException(ErrorCodeEnum.NOT_FOUND));
+        examSessionMapper.setValue(requestDto, examRoom);
+        return true;
     }
 }

@@ -22,7 +22,7 @@ public class ExamRoomRequestDto {
     private String startTime;
     private String endTime;
     private String sessionDate;
-    private int status;
+    private Integer status;
 
     public LocalDateTime getStartTime() {
         if (startTime != null)

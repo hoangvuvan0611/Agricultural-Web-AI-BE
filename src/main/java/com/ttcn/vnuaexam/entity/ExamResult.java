@@ -18,8 +18,8 @@ public class ExamResult extends BaseEntity {
     @Column(name = "exam_id")
     private Long examId;
 
-//    @Column(name = "exam_session_id")
-//    private Long examRoomId;
+    @Column(name = "exam_session_id")
+    private Long examRoomId;
 
     @Column(name = "student_id")
     private Long studentId;
