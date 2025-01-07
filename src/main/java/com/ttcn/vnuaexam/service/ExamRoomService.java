@@ -17,5 +17,5 @@ public interface ExamRoomService {
 
     List<ExamRoomResponseDto> findAll();
 
-    Boolean start(Long id, ExamRoomRequestDto requestDto) throws EMException;
+    Boolean updateStatus(Long id, Integer status) throws EMException;
 }

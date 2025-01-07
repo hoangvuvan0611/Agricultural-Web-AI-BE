@@ -20,6 +20,8 @@ public class ExamResponseDto extends BaseObjectDto implements Serializable {
     private Long id;
     private Long subjectId;
     private Long examSetId;
+    private String subjectName;
+    private String examSetName;
     private String code;
     private String title;
     private String description;
@@ -40,5 +42,18 @@ public class ExamResponseDto extends BaseObjectDto implements Serializable {
         this.totalScore = response.getTotalScore();
         this.status = response.getStatus();
         this.hadQuestion = response.getHadQuestion();
+    }
+
+    public ExamResponseDto(Long id, Long examSetId, Long subjectId, String subjectName, String examSetName,
+                           String title, Integer duration, Integer totalQuestions, BigDecimal totalScore) {
+        this.id = id;
+        this.examSetId = examSetId;
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
+        this.examSetName = examSetName;
+        this.title = title;
+        this.duration = duration;
+        this.totalQuestions = totalQuestions;
+        this.totalScore = totalScore;
     }
 }

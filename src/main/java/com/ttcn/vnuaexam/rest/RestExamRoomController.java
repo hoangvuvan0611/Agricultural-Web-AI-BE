@@ -45,9 +45,9 @@ public class RestExamRoomController {
         return new EMResponse<>(examRoomService.findById(id));
     }
 
-    @PutMapping("/{id}/start")
-    public EMResponse<Boolean> start(@PathVariable Long id, @RequestBody ExamRoomRequestDto requestDto) throws EMException {
-        return new EMResponse<>(examRoomService.start(id, requestDto));
+    @PutMapping("/start/{id}")
+    public EMResponse<Boolean> start(@PathVariable Long id, @RequestParam Integer status) throws EMException {
+        return new EMResponse<>(examRoomService.updateStatus(id, status));
     }
 
     @GetMapping("/get-status-map")
