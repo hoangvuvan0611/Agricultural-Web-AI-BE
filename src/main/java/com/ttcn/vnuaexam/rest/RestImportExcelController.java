@@ -27,4 +27,10 @@ public class RestImportExcelController {
                                                    @RequestParam("roomId") Long roomId) throws IOException {
         return new EMResponse<>(importExcelService.addStudentToRoom(file, roomId));
     }
+
+    @PostMapping("/question")
+    public EMResponse<String> importQuestions(@RequestParam("file") MultipartFile file,
+                                              @RequestParam("subjectId") Long subjectId) throws IOException {
+        return new EMResponse<>(importExcelService.importQuestion(file, subjectId));
+    }
 }

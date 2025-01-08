@@ -2,6 +2,11 @@ package com.ttcn.vnuaexam.service.impl;
 
 import com.ttcn.vnuaexam.constant.Constant;
 import com.ttcn.vnuaexam.dto.request.UserRequestDto;
+import com.ttcn.vnuaexam.entity.Answer;
+import com.ttcn.vnuaexam.entity.Question;
+import com.ttcn.vnuaexam.repository.AnswerRepository;
+import com.ttcn.vnuaexam.repository.ChapterRepository;
+import com.ttcn.vnuaexam.repository.QuestionRepository;
 import com.ttcn.vnuaexam.service.ImportExcelService;
 import com.ttcn.vnuaexam.service.RoomStudentService;
 import com.ttcn.vnuaexam.service.UserService;
@@ -12,9 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -36,10 +40,13 @@ import static com.ttcn.vnuaexam.constant.MessageCodes.EXCEL_EXTENSION_ERROR_MESS
 public class ImportExcelServiceImpl implements ImportExcelService {
     private final UserService userService;
     private final RoomStudentService roomStudentService;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private static final Set<String> SUPPORTED_EXTENSIONS = Set.of(
             Constant.EXCEL_EXTENSION.XLSX,
             Constant.EXCEL_EXTENSION.XLS
     );
+    private final ChapterRepository chapterRepository;
 
     @Override
     public String importStudent(MultipartFile file) throws IOException {
@@ -143,6 +150,7 @@ public class ImportExcelServiceImpl implements ImportExcelService {
                 .toList();
     }
 
+    /*
     @Override
     public String importQuestion(MultipartFile file) throws IOException {
         // tạo message
@@ -166,13 +174,13 @@ public class ImportExcelServiceImpl implements ImportExcelService {
                     return EXCEL_EXTENSION_ERROR_MESSAGE;
             }
             if (sheet != null) {
-                /*
+
                 List<UserRequestDto> requestDtoList = getDataFromFile(sheet);
                 for (UserRequestDto userRequestDto : requestDtoList) {
 
                 }
 
-                 */
+
             }
         } catch (IOException e) {
             log.error("False to importShippingStatus : ERROR: {}", e.getMessage(), e);
@@ -181,5 +189,91 @@ public class ImportExcelServiceImpl implements ImportExcelService {
                 workbook.close();
         }
         return message.toString();
+    }
+
+     */
+
+    @Override
+    public String importQuestion(MultipartFile file, Long subjectId) throws IOException {
+        List<Question> questions = new ArrayList<>();
+        List<Answer> answers = new ArrayList<>();
+
+        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                int cellIndex = 0;
+                // Lưu câu hỏi
+                Question question = new Question();
+                String questionContent = ExcelUtils.getCellValue(row.getCell(cellIndex++));
+                String chapterString = ExcelUtils.getCellValue(row.getCell(cellIndex++));
+                var chapterList = chapterRepository.findByNameAndSubjectId(chapterString, subjectId);
+
+                question.setContent(questionContent);
+                if (!chapterList.isEmpty()) {
+                    var chapterId = chapterList.getFirst().getId();
+                    question.setChapterId(chapterId);
+                }
+
+                question.setSubjectId(subjectId);
+                questions.add(question);
+
+                List<Answer> questionAnswers = new ArrayList<>();
+                boolean hasCorrectAnswer = false;
+
+                // Đọc đáp án từ cột 1 đến 4
+                for (int j = 2; j <= 5; j++) {
+                    Cell answerCell = row.getCell(j);
+                    if (answerCell == null || answerCell.getCellType() == CellType.BLANK) continue;
+
+                    Answer answer = new Answer();
+                    String answerContent = getCellValueAsString(answerCell);
+                    answer.setContent(answerContent);
+                    answer.setOrderNumber(j);
+                    answer.setIsCorrect(j == 2); // Mặc định câu đầu tiên là đúng
+                    questionAnswers.add(answer);
+
+                    if (answer.getIsCorrect()) {
+                        hasCorrectAnswer = true;
+                    }
+                }
+
+                // Kiểm tra có ít nhất 1 đáp án đúng
+                if (!questionAnswers.isEmpty() && hasCorrectAnswer) {
+                    question = questionRepository.save(question);
+                    System.out.println("Saved Question ID: " + question.getId());// Lưu câu hỏi trước
+                    for (Answer ans : questionAnswers) {
+                        ans.setQuestionId(question.getId()); // Gán ID câu hỏi
+                    }
+                    answerRepository.saveAll(questionAnswers);
+                    System.out.println("Answers: " + answers);// Lưu danh sách đáp án
+                    answers.addAll(questionAnswers);
+                }
+            }
+        }
+
+        return "Import completed. Questions: " + questions.size() + ", Answers: " + answers.size();
+    }
+
+    private String getCellValueAsString(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf((int) cell.getNumericCellValue()); // Chuyển số thành chuỗi
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            default:
+                return "";
+        }
     }
 }

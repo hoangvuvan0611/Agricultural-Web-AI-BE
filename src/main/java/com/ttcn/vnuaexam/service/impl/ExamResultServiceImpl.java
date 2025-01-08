@@ -26,7 +26,6 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final ExamResultMapper examResultMapper;
     private final UserService userService;
 
-
     @Override
     @Transactional
     public ExamResultResponseDto submitExam(ExamResultRequestDto requestDto) throws EMException {

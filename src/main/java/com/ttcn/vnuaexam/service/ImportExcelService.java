@@ -9,5 +9,5 @@ public interface ImportExcelService {
 
     String addStudentToRoom(MultipartFile file, Long roomId) throws IOException;
 
-    String importQuestion(MultipartFile file) throws IOException;
+    String importQuestion(MultipartFile file, Long subjectId) throws IOException;
 }
