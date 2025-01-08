@@ -20,4 +20,5 @@ public class ExamSetResponseDto extends BaseObjectDto {
     private Long subjectId;
     private String code;
     private String title;
+    private Integer status;
 }
